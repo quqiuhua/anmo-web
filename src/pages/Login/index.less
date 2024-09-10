@@ -1,0 +1,122 @@
+.card {
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .login {
+    width: 774px;
+    height: 480px;
+    display: flex;
+    justify-content: flex-end;
+
+    .left {
+      width: 415px;
+      height: 100%;
+      text-align: center;
+      background-color: rgba(241, 245, 251, 100%);
+      color: rgba(51, 51, 51, 100%);
+
+      .title {
+        display: inline-block;
+        margin-top: 34px;
+        font-weight: 560;
+        color: rgba(68, 98, 210, 100%);
+        font-size: 20px;
+        font-family: PingFangSC-regular;
+      }
+
+      .img {
+        width: 348px;
+        height: 306px;
+        margin-left: 46px;
+        background: url('../../assets/login.jpg');
+        background-size: 100%;
+      }
+    }
+
+    .right {
+      width: 360px;
+      height: 480px;
+      background: #fff;
+      border: 1px solid rgba(215, 215, 215, 100%);
+      border-radius: 0 9px 9px 0;
+      background-color: rgba(255, 255, 255, 100%);
+      color: rgba(51, 51, 51, 100%);
+
+      .title {
+        display: inline-block;
+        margin: 20px 0 0 22px;
+        font-weight: 600;
+        color: rgba(68, 98, 210, 100%);
+        font-size: 20px;
+        font-family: PingFangSC-regular;
+      }
+
+      :global {
+        .ant-pro-form-login-container {
+          height: 400px;
+          padding: 12px;
+        }
+      }
+    }
+  }
+}
+
+.loginForm {
+  padding-top: 24px;
+
+  :global {
+    .ant-btn-lg {
+      border-radius: 0 5px 5px 0;
+      background-color: rgba(68, 98, 210, 100%);
+      color: rgba(255, 255, 255, 100%);
+      font-size: 16px;
+      text-align: center;
+      font-family: Roboto;
+      border: 1px solid rgba(215, 215, 215, 100%);
+      transform: translateY(36px);
+    }
+  }
+}
+
+.remember {
+  color: rgba(127, 127, 127, 100%);
+  font-size: 13px;
+  text-align: left;
+  font-family: PingFangSC-regular;
+}
+
+.pro-form {
+  margin-top: 24px;
+  padding: 24px;
+}
+
+.cancel-btn {
+  width: 140px;
+  height: 40px;
+  line-height: 16px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 100%);
+  color: rgba(68, 98, 210, 100%);
+  font-size: 13px;
+  text-align: center;
+  font-family: Roboto;
+  border: 1px solid rgba(68, 98, 210, 100%);
+}
+
+.confirm-btn {
+  width: 140px;
+  height: 40px;
+  margin-left: 12px;
+  line-height: 16px;
+  border-radius: 5px;
+  background-color: rgba(68, 98, 210, 100%);
+  color: rgba(255, 255, 255, 100%);
+  font-size: 13px;
+  text-align: center;
+  font-family: Roboto;
+  border: 0 solid rgba(121, 121, 121, 100%);
+}
