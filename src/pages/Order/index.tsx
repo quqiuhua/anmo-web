@@ -1,0 +1,183 @@
+import { ORDER_STATUS, USER_RATING_ENMS } from '@/constants/index';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
+import { request } from '@umijs/max';
+import { useRef } from 'react';
+
+export const waitTimePromise = async (time: number = 100) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, time);
+  });
+};
+
+export const waitTime = async (time: number = 100) => {
+  await waitTimePromise(time);
+};
+
+type GithubIssueItem = {
+  userId: string;
+  name: string;
+  status: string;
+  state: string;
+  phoneNumber: number;
+  registerTime: number;
+  comments: Record<string, any>[];
+  created_at: string;
+  updated_at: string;
+  closed_at?: string;
+};
+
+export default () => {
+  const actionRef = useRef<ActionType>();
+
+  const onOfferDiscountCard = () => {};
+
+  const cancelOrder = (record: GithubIssueItem) => {
+    console.log('record>>>>>', record);
+  };
+
+  const columns: ProColumns<GithubIssueItem>[] = [
+    {
+      title: '订单号',
+      dataIndex: 'orderId',
+    },
+    {
+      title: '技师昵称',
+      dataIndex: 'massager',
+    },
+    {
+      title: '技师手机号',
+      dataIndex: 'massagerPhone',
+      hideInSearch: true,
+    },
+    {
+      title: '下单时间',
+      key: 'registerTime',
+      dataIndex: 'registerTime',
+      valueType: 'dateRange',
+    },
+    {
+      title: '用户昵称',
+      dataIndex: 'userName',
+    },
+    {
+      title: '用户评分',
+      dataIndex: 'userMark',
+      valueType: 'select',
+      hideInTable: true,
+      fieldProps: () => {
+        return {
+          options: USER_RATING_ENMS,
+        };
+      },
+    },
+    {
+      title: '订单状态',
+      dataIndex: 'orderStatus',
+      valueType: 'select',
+      hideInTable: true,
+      fieldProps: () => {
+        return {
+          options: ORDER_STATUS,
+        };
+      },
+    },
+    {
+      title: '按摩项目',
+      dataIndex: 'projectName',
+      hideInSearch: true,
+    },
+    {
+      title: '订单金额',
+      dataIndex: 'orderAmount',
+      hideInSearch: true,
+    },
+    {
+      title: '用户手机号',
+      dataIndex: 'userPhone',
+      hideInSearch: true,
+    },
+    {
+      title: '用户评价',
+      dataIndex: 'userComments',
+      hideInSearch: true,
+    },
+    {
+      title: '操作',
+      valueType: 'option',
+      key: 'option',
+      render: (text, record) => [
+        <a key="editable" onClick={onOfferDiscountCard}>
+          编辑订单
+        </a>,
+        <a
+          onClick={() => cancelOrder(record)}
+          target="_blank"
+          rel="noopener noreferrer"
+          key="view"
+        >
+          取消订单
+        </a>,
+      ],
+    },
+  ];
+
+  return (
+    <PageContainer>
+      <ProTable<GithubIssueItem>
+        columns={columns}
+        actionRef={actionRef}
+        cardBordered
+        request={async (params, sort, filter) => {
+          console.log(sort, filter);
+          await waitTime(2000);
+          return request<{
+            data: GithubIssueItem[];
+          }>('https://proapi.azurewebsites.net/github/issues', {
+            params,
+          });
+        }}
+        editable={{
+          type: 'multiple',
+        }}
+        columnsState={{
+          persistenceKey: 'pro-table-singe-demos',
+          persistenceType: 'localStorage',
+          defaultValue: {
+            option: { fixed: 'right', disable: true },
+          },
+          onChange(value) {
+            console.log('value: ', value);
+          },
+        }}
+        rowKey="id"
+        search={{
+          labelWidth: 'auto',
+          collapseRender: false,
+          defaultCollapsed: false,
+        }}
+        options={false}
+        form={{
+          // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
+          syncToUrl: (values, type) => {
+            if (type === 'get') {
+              return {
+                ...values,
+                created_at: [values.startTime, values.endTime],
+              };
+            }
+            return values;
+          },
+        }}
+        pagination={{
+          pageSize: 10,
+          onChange: (page) => console.log(page),
+        }}
+        dateFormatter="string"
+        headerTitle="订单列表"
+      />
+    </PageContainer>
+  );
+};
