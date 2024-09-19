@@ -1,3 +1,4 @@
+import { ACCOUNT_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { history, request } from '@umijs/max';
@@ -73,6 +74,9 @@ export default () => {
       title: '账户状态',
       dataIndex: 'status',
       valueType: 'select',
+      fieldProps: {
+        options: ACCOUNT_STATUS,
+      },
       render: () => {
         return <Switch checked={true} />;
       },
@@ -98,7 +102,7 @@ export default () => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title="用户查询">
       <ProTable<GithubIssueItem>
         columns={columns}
         actionRef={actionRef}

@@ -1,4 +1,3 @@
-import { ORDER_STATUS, USER_RATING_ENMS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
@@ -33,98 +32,56 @@ type GithubIssueItem = {
 export default () => {
   const actionRef = useRef<ActionType>();
 
-  const onOfferDiscountCard = () => {};
-
-  const cancelOrder = (record: GithubIssueItem) => {
-    console.log('record>>>>>', record);
-  };
+  const handlePass = () => {};
 
   const columns: ProColumns<GithubIssueItem>[] = [
     {
-      title: '订单号',
-      dataIndex: 'orderId',
-    },
-    {
-      title: '技师昵称',
-      dataIndex: 'massager',
-    },
-    {
-      title: '技师手机号',
-      dataIndex: 'massagerPhone',
+      title: '用户昵称',
+      dataIndex: 'nickName',
       hideInSearch: true,
     },
     {
-      title: '下单时间',
-      key: 'registerTime',
-      dataIndex: 'registerTime',
-      valueType: 'dateRange',
+      title: '真实姓名',
+      dataIndex: 'realName',
     },
     {
-      title: '用户昵称',
-      dataIndex: 'userName',
+      title: '手机号',
+      dataIndex: 'phoneNumber',
     },
     {
-      title: '用户评分',
-      dataIndex: 'userMark',
-      valueType: 'select',
-      hideInTable: true,
-      fieldProps: () => {
-        return {
-          options: USER_RATING_ENMS,
-        };
-      },
-    },
-    {
-      title: '订单状态',
-      dataIndex: 'orderStatus',
-      valueType: 'select',
-      hideInTable: true,
-      fieldProps: () => {
-        return {
-          options: ORDER_STATUS,
-        };
-      },
-    },
-    {
-      title: '按摩项目',
+      title: '申请项目',
       dataIndex: 'projectName',
       hideInSearch: true,
     },
     {
-      title: '订单金额',
-      dataIndex: 'orderAmount',
-      hideInSearch: true,
-    },
-    {
-      title: '用户手机号',
-      dataIndex: 'userPhone',
-      hideInSearch: true,
-    },
-    {
-      title: '用户评价',
-      dataIndex: 'userComments',
+      title: '审核状态',
+      dataIndex: 'auditStatus',
       hideInSearch: true,
     },
     {
       title: '操作',
       valueType: 'option',
       key: 'option',
-      render: (text, record) => [
-        <a key="editable" onClick={onOfferDiscountCard}>
-          编辑订单
-        </a>,
+      render: () => [
         <Popconfirm
           key="reslove"
-          title="取消订单"
-          description="您确定要取消此订单吗?"
-          onConfirm={() => cancelOrder(record)}
+          title="通过项目审核"
+          description="您确定要通过此条项目申请吗?"
+          onConfirm={handlePass}
           okText="确定"
           cancelText="取消"
         >
-          <a target="_blank" rel="noopener noreferrer" key="view">
-            取消订单
-          </a>
-          ,
+          <a key="editable">通过</a>
+        </Popconfirm>,
+        <Popconfirm
+          key="reject"
+          title="拒绝项目审核"
+          description="您确定要拒绝此条项目申请吗?"
+          onConfirm={handlePass}
+          okText="确定"
+          cancelText="取消"
+        >
+          <a key="audit">拒绝</a>
         </Popconfirm>,
       ],
     },
@@ -144,19 +101,6 @@ export default () => {
           }>('https://proapi.azurewebsites.net/github/issues', {
             params,
           });
-        }}
-        editable={{
-          type: 'multiple',
-        }}
-        columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
-          persistenceType: 'localStorage',
-          defaultValue: {
-            option: { fixed: 'right', disable: true },
-          },
-          onChange(value) {
-            console.log('value: ', value);
-          },
         }}
         rowKey="id"
         search={{
@@ -182,7 +126,7 @@ export default () => {
           onChange: (page) => console.log(page),
         }}
         dateFormatter="string"
-        headerTitle="订单列表"
+        headerTitle="项目审核列表"
       />
     </PageContainer>
   );

@@ -25,7 +25,12 @@ export default [
       {
         name: '注册技师审核',
         path: '/user/massager-audit',
-        component: './User/Audit',
+        component: './User/MassagerAudit',
+      },
+      {
+        name: '技师项目审核',
+        path: '/user/project-audit',
+        component: './User/ProjectAudit',
       },
     ],
   },
@@ -56,7 +61,13 @@ export default [
     name: '项目管理',
     path: '/goods',
     icon: 'ShoppingOutlined',
-    component: './Projects',
+    component: './Projects/List',
+  },
+  {
+    name: '项目详情',
+    path: '/goods/detail',
+    hideInMenu: true,
+    component: './Projects/Detail',
   },
   {
     name: '分成规则',

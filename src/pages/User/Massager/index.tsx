@@ -1,7 +1,9 @@
+import Comments from '@/components/Comments';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { history, request } from '@umijs/max';
-import { Avatar, Button, Switch } from 'antd';
+import { history } from '@umijs/max';
+import { useSetState } from 'ahooks';
+import { Avatar, Switch } from 'antd';
 import { useRef } from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -29,10 +31,34 @@ type GithubIssueItem = {
   closed_at?: string;
 };
 
+interface State {
+  openComments: boolean;
+  openMassagerInfoModal: boolean;
+  openType?: 'detail' | 'audit';
+  commentsData: Record<string, any>[];
+}
+
 export default () => {
   const actionRef = useRef<ActionType>();
+  const [state, setState] = useSetState<State>({
+    openComments: false,
+    openMassagerInfoModal: false,
+    commentsData: [],
+  });
+  const { openComments } = state;
 
-  const onOfferDiscountCard = () => {};
+  const showComments = () => {
+    setState({
+      openComments: true,
+    });
+  };
+
+  const onClose = () => {
+    setState({
+      openComments: false,
+      openMassagerInfoModal: false,
+    });
+  };
 
   const gotoOrder = (record: GithubIssueItem) => {
     history.push({
@@ -44,6 +70,7 @@ export default () => {
     {
       title: '用户昵称',
       dataIndex: 'name',
+      fixed: 'left',
       render: () => {
         return (
           <>
@@ -75,14 +102,28 @@ export default () => {
       hideInSearch: true,
     },
     {
+      title: '账户状态',
+      dataIndex: 'status',
+      valueType: 'select',
+      hideInTable: true,
+    },
+    {
       title: '技师评分',
       dataIndex: 'massagerGrade',
-      hideInSearch: true,
+      valueType: 'slider',
+      fieldProps: {
+        defaultValue: [0, 5],
+        min: 0,
+        max: 5,
+        range: {
+          draggableTrack: true,
+        },
+      },
     },
     {
       title: '账户状态',
       dataIndex: 'status',
-      valueType: 'select',
+      hideInSearch: true,
       render: () => {
         return <Switch checked={true} />;
       },
@@ -100,7 +141,7 @@ export default () => {
       valueType: 'option',
       key: 'option',
       render: (text, record) => [
-        <a key="editable" onClick={onOfferDiscountCard}>
+        <a key="editable" onClick={showComments}>
           查看评价
         </a>,
         <a
@@ -111,7 +152,7 @@ export default () => {
         >
           查看基础信息
         </a>,
-        <a key="audit" onClick={onOfferDiscountCard}>
+        <a key="audit" onClick={showComments}>
           资料修改审核
         </a>,
       ],
@@ -119,7 +160,7 @@ export default () => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title="技师用户查询">
       <ProTable<GithubIssueItem>
         columns={columns}
         actionRef={actionRef}
@@ -127,11 +168,10 @@ export default () => {
         request={async (params, sort, filter) => {
           console.log(sort, filter);
           await waitTime(2000);
-          return request<{
-            data: GithubIssueItem[];
-          }>('https://proapi.azurewebsites.net/github/issues', {
-            params,
-          });
+          return {
+            data: [{ id: '11', name: 'name' }],
+            total: 10,
+          };
         }}
         editable={{
           type: 'multiple',
@@ -146,17 +186,6 @@ export default () => {
             console.log('value: ', value);
           },
         }}
-        toolBarRender={() => [
-          <Button
-            key="button"
-            onClick={() => {
-              actionRef.current?.reload();
-            }}
-            type="primary"
-          >
-            查看技师项目申请
-          </Button>,
-        ]}
         rowKey="id"
         search={{
           labelWidth: 'auto',
@@ -164,6 +193,9 @@ export default () => {
           defaultCollapsed: false,
         }}
         options={false}
+        scroll={{
+          x: 1400,
+        }}
         form={{
           // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
           syncToUrl: (values, type) => {
@@ -183,6 +215,7 @@ export default () => {
         dateFormatter="string"
         headerTitle="技师用户列表"
       />
+      <Comments open={openComments} onClose={onClose} data={[]} />
     </PageContainer>
   );
 };

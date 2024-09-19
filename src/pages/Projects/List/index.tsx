@@ -1,6 +1,7 @@
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
+import { Popconfirm } from 'antd';
 import { useRef } from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -69,16 +70,23 @@ export default () => {
       key: 'option',
       render: (text, record) => [
         <a key="editable" onClick={onOfferDiscountCard}>
-          编辑详情
+          编辑项目
         </a>,
-        <a
-          onClick={() => deleteProject(record)}
-          target="_blank"
-          rel="noopener noreferrer"
-          key="view"
+        <a key="detail" onClick={onOfferDiscountCard}>
+          项目详情
+        </a>,
+        <Popconfirm
+          key="delete"
+          title="删除项目"
+          description="您确定要删除此项目吗?"
+          onConfirm={() => deleteProject(record)}
+          okText="确定"
+          cancelText="取消"
         >
-          删除
-        </a>,
+          <a target="_blank" rel="noopener noreferrer" key="view">
+            删除
+          </a>
+        </Popconfirm>,
       ],
     },
   ];

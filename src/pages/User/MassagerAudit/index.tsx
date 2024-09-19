@@ -1,7 +1,7 @@
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
-import { Switch } from 'antd';
+import { Popconfirm } from 'antd';
 import { useRef } from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -34,6 +34,8 @@ export default () => {
 
   const goDetail = () => {};
 
+  const handleDelete = () => {};
+
   const columns: ProColumns<GithubIssueItem>[] = [
     {
       title: '真实姓名',
@@ -58,9 +60,11 @@ export default () => {
       title: '资料提交状态',
       dataIndex: 'status',
       valueType: 'select',
-      render: () => {
-        return <Switch checked={true} />;
-      },
+    },
+    {
+      title: '审核状态',
+      dataIndex: 'auditStatus',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -70,9 +74,16 @@ export default () => {
         <a key="editable" onClick={() => goDetail()}>
           查看详情
         </a>,
-        <a key="audit" onClick={() => {}}>
-          删除
-        </a>,
+        <Popconfirm
+          key="audit"
+          title="删除审核数据"
+          description="您确定要删除此条数据吗?"
+          onConfirm={handleDelete}
+          okText="确定"
+          cancelText="取消"
+        >
+          <a key="audit">删除</a>
+        </Popconfirm>,
       ],
     },
   ];
@@ -129,7 +140,7 @@ export default () => {
           onChange: (page) => console.log(page),
         }}
         dateFormatter="string"
-        headerTitle="审核列表"
+        headerTitle="技师审核列表"
       />
     </PageContainer>
   );

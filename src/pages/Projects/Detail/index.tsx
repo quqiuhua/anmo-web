@@ -1,4 +1,3 @@
-import { ORDER_STATUS, USER_RATING_ENMS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
@@ -35,74 +34,34 @@ export default () => {
 
   const onOfferDiscountCard = () => {};
 
-  const cancelOrder = (record: GithubIssueItem) => {
+  const deleteProject = (record: GithubIssueItem) => {
     console.log('record>>>>>', record);
   };
 
   const columns: ProColumns<GithubIssueItem>[] = [
     {
-      title: '订单号',
-      dataIndex: 'orderId',
-    },
-    {
-      title: '技师昵称',
-      dataIndex: 'massager',
-    },
-    {
-      title: '技师手机号',
-      dataIndex: 'massagerPhone',
-      hideInSearch: true,
-    },
-    {
-      title: '下单时间',
-      key: 'registerTime',
-      dataIndex: 'registerTime',
-      valueType: 'dateRange',
-    },
-    {
-      title: '用户昵称',
-      dataIndex: 'userName',
-    },
-    {
-      title: '用户评分',
-      dataIndex: 'userMark',
-      valueType: 'select',
-      hideInTable: true,
-      fieldProps: () => {
-        return {
-          options: USER_RATING_ENMS,
-        };
-      },
-    },
-    {
-      title: '订单状态',
-      dataIndex: 'orderStatus',
-      valueType: 'select',
-      hideInTable: true,
-      fieldProps: () => {
-        return {
-          options: ORDER_STATUS,
-        };
-      },
-    },
-    {
-      title: '按摩项目',
+      title: '项目名称',
       dataIndex: 'projectName',
+    },
+    {
+      title: '项目标价',
+      dataIndex: 'projectPrice',
+    },
+    {
+      title: '项目时间',
+      key: 'projectTimeConsuming',
+      dataIndex: 'projectTimeConsuming',
       hideInSearch: true,
     },
     {
-      title: '订单金额',
-      dataIndex: 'orderAmount',
+      title: '展示权重',
+      dataIndex: 'showZIndex',
       hideInSearch: true,
     },
     {
-      title: '用户手机号',
-      dataIndex: 'userPhone',
-      hideInSearch: true,
-    },
-    {
-      title: '用户评价',
-      dataIndex: 'userComments',
+      title: '项目状态',
+      dataIndex: 'projectStatus',
+      valueType: 'switch',
       hideInSearch: true,
     },
     {
@@ -111,20 +70,19 @@ export default () => {
       key: 'option',
       render: (text, record) => [
         <a key="editable" onClick={onOfferDiscountCard}>
-          编辑订单
+          编辑详情
         </a>,
         <Popconfirm
-          key="reslove"
-          title="取消订单"
-          description="您确定要取消此订单吗?"
-          onConfirm={() => cancelOrder(record)}
+          key="delete"
+          title="删除项目"
+          description="您确定要删除此项目吗?"
+          onConfirm={() => deleteProject(record)}
           okText="确定"
           cancelText="取消"
         >
           <a target="_blank" rel="noopener noreferrer" key="view">
-            取消订单
+            删除
           </a>
-          ,
         </Popconfirm>,
       ],
     },
@@ -182,7 +140,7 @@ export default () => {
           onChange: (page) => console.log(page),
         }}
         dateFormatter="string"
-        headerTitle="订单列表"
+        headerTitle="项目列表"
       />
     </PageContainer>
   );

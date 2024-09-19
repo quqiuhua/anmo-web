@@ -1,17 +1,21 @@
 import logo from '@/assets/logo.png';
 import { LogoutOutlined } from '@ant-design/icons';
-import { useModel } from '@umijs/max';
+import { history, useLocation, useModel } from '@umijs/max';
 import { Dropdown } from 'antd';
 
 const RightContent = () => {
   const { initialState } = useModel('@@initialState');
   const { name } = initialState;
-  console.log('initialState>>>>>', initialState);
+  const location = useLocation();
+
+  if (location.pathname === '/') {
+    history.replace('/user/normal');
+  }
 
   const onLogout = () => {
     console.log('退出');
-    // history.push('/login')
   };
+
   return {
     title: <h3 style={{ color: '#0A7AFF' }}>有幸到家</h3>,
     siderMenuType: 'group',
