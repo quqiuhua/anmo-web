@@ -1,3 +1,4 @@
+import GiveCoupon from '@/components/Modals/GiveCoupon';
 import { ACCOUNT_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
@@ -86,9 +87,11 @@ export default () => {
       valueType: 'option',
       key: 'option',
       render: (text, record) => [
-        <a key="editable" onClick={onOfferDiscountCard}>
-          发放优惠券
-        </a>,
+        <GiveCoupon key="give-coupon" userId={record.userId}>
+          <a key="editable" onClick={onOfferDiscountCard}>
+            发放优惠券
+          </a>
+        </GiveCoupon>,
         <a
           onClick={() => gotoOrder(record)}
           target="_blank"
@@ -136,18 +139,6 @@ export default () => {
           defaultCollapsed: false,
         }}
         options={false}
-        form={{
-          // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
-          syncToUrl: (values, type) => {
-            if (type === 'get') {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
-        }}
         pagination={{
           pageSize: 10,
           onChange: (page) => console.log(page),

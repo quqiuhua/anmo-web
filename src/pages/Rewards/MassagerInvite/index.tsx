@@ -1,3 +1,4 @@
+import RewardRuleModal from '@/components/Modals/RewardRule';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
@@ -139,15 +140,9 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Button
-            key="button"
-            onClick={() => {
-              actionRef.current?.reload();
-            }}
-            type="primary"
-          >
-            配置奖励机制
-          </Button>,
+          <RewardRuleModal key="button">
+            <Button type="primary">配置奖励机制</Button>
+          </RewardRuleModal>,
         ]}
         rowKey="id"
         search={{
@@ -156,18 +151,6 @@ export default () => {
           defaultCollapsed: false,
         }}
         options={false}
-        form={{
-          // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
-          syncToUrl: (values, type) => {
-            if (type === 'get') {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
-        }}
         pagination={{
           pageSize: 10,
           onChange: (page) => console.log(page),

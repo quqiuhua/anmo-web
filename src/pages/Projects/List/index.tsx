@@ -1,8 +1,9 @@
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { request } from '@umijs/max';
-import { Popconfirm } from 'antd';
-import { useRef } from 'react';
+import { history, request } from '@umijs/max';
+import { Button, Popconfirm } from 'antd';
+import React, { useRef } from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
   return new Promise((resolve) => {
@@ -29,13 +30,23 @@ type GithubIssueItem = {
   closed_at?: string;
 };
 
-export default () => {
+export default (): React.FC => {
   const actionRef = useRef<ActionType>();
 
-  const onOfferDiscountCard = () => {};
+  const goEditPage = () => {
+    history.push('/projects/edit');
+  };
+
+  const goProjectDetail = () => {
+    history.push('/projects/detail');
+  };
 
   const deleteProject = (record: GithubIssueItem) => {
     console.log('record>>>>>', record);
+  };
+
+  const goToCreatePage = () => {
+    history.push('/projects/add');
   };
 
   const columns: ProColumns<GithubIssueItem>[] = [
@@ -69,10 +80,10 @@ export default () => {
       valueType: 'option',
       key: 'option',
       render: (text, record) => [
-        <a key="editable" onClick={onOfferDiscountCard}>
+        <a key="editable" onClick={goEditPage}>
           编辑项目
         </a>,
-        <a key="detail" onClick={onOfferDiscountCard}>
+        <a key="detail" onClick={goProjectDetail}>
           项目详情
         </a>,
         <Popconfirm
@@ -106,19 +117,16 @@ export default () => {
             params,
           });
         }}
-        editable={{
-          type: 'multiple',
-        }}
-        columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
-          persistenceType: 'localStorage',
-          defaultValue: {
-            option: { fixed: 'right', disable: true },
-          },
-          onChange(value) {
-            console.log('value: ', value);
-          },
-        }}
+        toolBarRender={() => [
+          <Button
+            key="create"
+            icon={<PlusOutlined />}
+            type="primary"
+            onClick={goToCreatePage}
+          >
+            新增项目
+          </Button>,
+        ]}
         rowKey="id"
         search={{
           labelWidth: 'auto',
@@ -126,18 +134,6 @@ export default () => {
           defaultCollapsed: false,
         }}
         options={false}
-        form={{
-          // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
-          syncToUrl: (values, type) => {
-            if (type === 'get') {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
-        }}
         pagination={{
           pageSize: 10,
           onChange: (page) => console.log(page),

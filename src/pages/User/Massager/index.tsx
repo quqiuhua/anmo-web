@@ -1,10 +1,9 @@
-import Comments from '@/components/Comments';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { history } from '@umijs/max';
 import { useSetState } from 'ahooks';
 import { Avatar, Switch } from 'antd';
 import { useRef } from 'react';
+import Comments from './components/Comments';
 
 export const waitTimePromise = async (time: number = 100) => {
   return new Promise((resolve) => {
@@ -32,7 +31,6 @@ type GithubIssueItem = {
 };
 
 interface State {
-  openComments: boolean;
   openMassagerInfoModal: boolean;
   openType?: 'detail' | 'audit';
   commentsData: Record<string, any>[];
@@ -41,28 +39,13 @@ interface State {
 export default () => {
   const actionRef = useRef<ActionType>();
   const [state, setState] = useSetState<State>({
-    openComments: false,
     openMassagerInfoModal: false,
     commentsData: [],
   });
-  const { openComments } = state;
-
-  const showComments = () => {
-    setState({
-      openComments: true,
-    });
-  };
 
   const onClose = () => {
     setState({
-      openComments: false,
       openMassagerInfoModal: false,
-    });
-  };
-
-  const gotoOrder = (record: GithubIssueItem) => {
-    history.push({
-      pathname: `/order?userId=${record.userId}`,
     });
   };
 
@@ -141,20 +124,11 @@ export default () => {
       valueType: 'option',
       key: 'option',
       render: (text, record) => [
-        <a key="editable" onClick={showComments}>
-          查看评价
-        </a>,
-        <a
-          onClick={() => gotoOrder(record)}
-          target="_blank"
-          rel="noopener noreferrer"
-          key="view"
-        >
-          查看基础信息
-        </a>,
-        <a key="audit" onClick={showComments}>
-          资料修改审核
-        </a>,
+        <Comments key="comment" onClose={onClose} data={[]}>
+          <a>查看评价</a>
+        </Comments>,
+        <a key="view">查看基础信息</a>,
+        <a key="audit">资料修改审核</a>,
       ],
     },
   ];
@@ -196,18 +170,6 @@ export default () => {
         scroll={{
           x: 1400,
         }}
-        form={{
-          // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
-          syncToUrl: (values, type) => {
-            if (type === 'get') {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
-        }}
         pagination={{
           pageSize: 10,
           onChange: (page) => console.log(page),
@@ -215,7 +177,6 @@ export default () => {
         dateFormatter="string"
         headerTitle="技师用户列表"
       />
-      <Comments open={openComments} onClose={onClose} data={[]} />
     </PageContainer>
   );
 };

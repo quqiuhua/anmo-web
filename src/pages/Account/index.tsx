@@ -1,8 +1,11 @@
+import CreateAccount from '@/components/Modals/CreateAccount';
+import EditPassword from '@/components/Modals/EditPassword';
 import { ACCOUNT_STATUS } from '@/constants/index';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
-import { Button } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import { useRef } from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -33,7 +36,7 @@ type GithubIssueItem = {
 export default () => {
   const actionRef = useRef<ActionType>();
 
-  const unBind = (record: GithubIssueItem) => {
+  const deleteAccount = (record: GithubIssueItem) => {
     console.log('record>>>>>', record);
   };
 
@@ -45,21 +48,12 @@ export default () => {
       hideInSearch: true,
     },
     {
-      title: '账户名称',
-      dataIndex: 'name',
-      hideInTable: true,
+      title: '用户名',
+      dataIndex: 'accountName',
     },
     {
-      disable: true,
-      title: '注册手机号',
-      hideInTable: true,
-      dataIndex: 'phoneNumber',
-    },
-    {
-      title: '注册时间',
-      key: 'registerTime',
-      dataIndex: 'registerTime',
-      valueType: 'dateRange',
+      title: '账号',
+      dataIndex: 'account',
     },
     {
       title: '账户状态',
@@ -70,38 +64,23 @@ export default () => {
       },
     },
     {
-      title: '剩余天数',
-      dataIndex: 'remainingDays',
-      hideInSearch: true,
-    },
-    {
-      title: '受邀人',
-      dataIndex: 'invitee',
-      hideInSearch: true,
-    },
-    {
-      title: '受邀人手机号',
-      dataIndex: 'inviteePhone',
-      hideInSearch: true,
-    },
-    {
-      title: '完单数量',
-      dataIndex: 'finishedOrder',
-      hideInSearch: true,
-    },
-    {
-      title: '剩余天数结束前流水额',
-      dataIndex: 'amount',
-      hideInSearch: true,
-    },
-    {
       title: '操作',
       valueType: 'option',
       key: 'option',
       render: (text, record) => [
-        <a key="editable" onClick={() => unBind(record)}>
-          解绑
-        </a>,
+        <Popconfirm
+          key="delete"
+          title="删除账号"
+          description="您确定要删除此账号吗?"
+          onConfirm={() => deleteAccount(record)}
+          okText="确定"
+          cancelText="取消"
+        >
+          <a>删除</a>,
+        </Popconfirm>,
+        <EditPassword key="eidt">
+          <a>修改密码</a>
+        </EditPassword>,
       ],
     },
   ];
@@ -135,15 +114,11 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Button
-            key="button"
-            onClick={() => {
-              actionRef.current?.reload();
-            }}
-            type="primary"
-          >
-            配置奖励机制
-          </Button>,
+          <CreateAccount key="create">
+            <Button icon={<PlusOutlined />} type="primary">
+              新增账户
+            </Button>
+          </CreateAccount>,
         ]}
         rowKey="id"
         search={{
@@ -152,18 +127,6 @@ export default () => {
           defaultCollapsed: false,
         }}
         options={false}
-        form={{
-          // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
-          syncToUrl: (values, type) => {
-            if (type === 'get') {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
-        }}
         pagination={{
           pageSize: 10,
           onChange: (page) => console.log(page),

@@ -57,7 +57,6 @@ export const USER_RATING_ENMS = [
 /**
  * 账户状态
  */
-
 export const ACCOUNT_STATUS = [
   {
     label: '启用',
@@ -66,5 +65,23 @@ export const ACCOUNT_STATUS = [
   {
     label: '禁用',
     value: 'disabled',
+  },
+];
+
+/**
+ * 限制类型
+ */
+export const LIMIT_TYPES = [
+  {
+    label: '女性',
+    value: 'female',
+  },
+  {
+    label: '男性',
+    value: 'male',
+  },
+  {
+    label: '不限制',
+    value: 'no-limit',
   },
 ];

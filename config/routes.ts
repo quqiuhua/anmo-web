@@ -37,17 +37,12 @@ export default [
   {
     name: '拉新奖励',
     path: '/rewards',
-    icon: 'ContainerOutlined',
+    icon: 'MoneyCollectOutlined',
     routes: [
       {
         name: '技师邀请',
         path: '/rewards/massager-invite',
         component: './Rewards/MassagerInvite',
-      },
-      {
-        name: '奖励审核',
-        path: '/rewards/audit',
-        component: './User/NormalUser',
       },
     ],
   },
@@ -59,27 +54,21 @@ export default [
   },
   {
     name: '项目管理',
-    path: '/goods',
+    path: '/projects',
     icon: 'ShoppingOutlined',
     component: './Projects/List',
   },
   {
-    name: '项目详情',
-    path: '/goods/detail',
+    name: '新建项目',
+    path: '/projects/:mode',
     hideInMenu: true,
-    component: './Projects/Detail',
+    component: './Projects/ProjectInfo',
   },
   {
     name: '分成规则',
     path: '/rules',
     icon: 'FileTextOutlined',
     component: './Rules',
-  },
-  {
-    name: '消息中心',
-    path: '/news',
-    icon: 'MessageOutlined',
-    component: './User/NormalUser',
   },
   {
     name: '技师收入查看',
