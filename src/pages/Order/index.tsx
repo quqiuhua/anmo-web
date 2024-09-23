@@ -1,9 +1,9 @@
 import { ORDER_STATUS, USER_RATING_ENMS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { request } from '@umijs/max';
-import { Popconfirm } from 'antd';
+import { Popconfirm, Rate } from 'antd';
 import { useRef } from 'react';
+import EditOrder from './components/EditOrder';
 
 export const waitTimePromise = async (time: number = 100) => {
   return new Promise((resolve) => {
@@ -32,8 +32,6 @@ type GithubIssueItem = {
 
 export default () => {
   const actionRef = useRef<ActionType>();
-
-  const onOfferDiscountCard = () => {};
 
   const cancelOrder = (record: GithubIssueItem) => {
     console.log('record>>>>>', record);
@@ -104,27 +102,32 @@ export default () => {
       title: '用户评价',
       dataIndex: 'userComments',
       hideInSearch: true,
+      render: () => {
+        return <Rate defaultValue={4} />;
+      },
     },
     {
       title: '操作',
       valueType: 'option',
       key: 'option',
       render: (text, record) => [
-        <a key="editable" onClick={onOfferDiscountCard}>
-          编辑订单
-        </a>,
+        <EditOrder key="edit">
+          <a>编辑订单</a>
+        </EditOrder>,
         <Popconfirm
           key="reslove"
           title="取消订单"
           description="您确定要取消此订单吗?"
           onConfirm={() => cancelOrder(record)}
           okText="确定"
+          okButtonProps={{
+            loading: true,
+          }}
           cancelText="取消"
         >
           <a target="_blank" rel="noopener noreferrer" key="view">
             取消订单
           </a>
-          ,
         </Popconfirm>,
       ],
     },
@@ -139,11 +142,9 @@ export default () => {
         request={async (params, sort, filter) => {
           console.log(sort, filter);
           await waitTime(2000);
-          return request<{
-            data: GithubIssueItem[];
-          }>('https://proapi.azurewebsites.net/github/issues', {
-            params,
-          });
+          return {
+            data: [{ orderId: 'xxxx' }],
+          };
         }}
         editable={{
           type: 'multiple',

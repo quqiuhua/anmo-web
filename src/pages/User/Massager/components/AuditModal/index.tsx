@@ -1,10 +1,8 @@
 import {
   ModalForm,
-  ProFormCascader,
   ProFormDatePicker,
   ProFormGroup,
   ProFormRadio,
-  ProFormSelect,
   ProFormText,
   ProFormUploadButton,
 } from '@ant-design/pro-components';
@@ -22,17 +20,17 @@ interface FormValues {
   limitDay: number;
 }
 
-const MassagerInfo: React.FC<Props> = ({ children }) => {
+const MassagerInfoAudit: React.FC<Props> = ({ children }) => {
   const [form] = Form.useForm<FormValues>();
 
   return (
     <ModalForm<FormValues>
-      title="技师信息"
+      title="资料审核"
       trigger={children}
+      className={styles['modal-form']}
       form={form}
       width={580}
       layout="horizontal"
-      className={styles['modal-form']}
       labelAlign="left"
       autoFocusFirstInput
       modalProps={{
@@ -59,14 +57,6 @@ const MassagerInfo: React.FC<Props> = ({ children }) => {
             label="姓名"
             placeholder="请输入姓名"
           />
-          <ProFormText
-            width="sm"
-            name="nickName"
-            label="昵称"
-            placeholder="请输入昵称"
-          />
-        </Space>
-        <Space>
           <ProFormRadio.Group
             width="md"
             options={[
@@ -79,45 +69,16 @@ const MassagerInfo: React.FC<Props> = ({ children }) => {
         </Space>
         <Space>
           <ProFormText
-            width="sm"
+            width="lg"
             name="ID"
             label="身份证号"
             placeholder="请输入身份证号"
           />
-          <ProFormText
-            width="sm"
-            name="merchantName"
-            label="商家名称"
-            placeholder="请输入商家名称"
-          />
         </Space>
         <Space>
-          <ProFormCascader
-            width="sm"
-            name="region"
-            label="所在地区"
-            placeholder="请输入所在地区"
-          />
-          <ProFormText
-            width="sm"
-            name="address"
-            label="地址"
-            placeholder="请输入地址"
-          />
+          <ProFormText width="lg" name="merchantName" label="意向服务城市" />
         </Space>
-        <Space>
-          <ProFormSelect
-            width="sm"
-            options={[
-              { label: '选项1', value: '01' },
-              { label: '选项2', value: '02' },
-              { label: '选项3', value: '03' },
-            ]}
-            name="serviceProject"
-            label="可服务项目"
-          />
-        </Space>
-        <ProFormDatePicker width="sm" name="date" label="健康证到期日" />
+        <ProFormDatePicker width="lg" name="date" label="健康证到期日" />
         <ProFormUploadButton
           width="md"
           label="生活照"
@@ -184,4 +145,4 @@ const MassagerInfo: React.FC<Props> = ({ children }) => {
   );
 };
 
-export default MassagerInfo;
+export default MassagerInfoAudit;

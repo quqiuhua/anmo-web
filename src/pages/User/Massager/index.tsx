@@ -3,6 +3,8 @@ import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { useSetState } from 'ahooks';
 import { Avatar, Switch } from 'antd';
 import { useRef } from 'react';
+import MassagerAudit from './components/AuditModal';
+import BasicInfo from './components/BasicInfo';
 import Comments from './components/Comments';
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -42,6 +44,8 @@ export default () => {
     openMassagerInfoModal: false,
     commentsData: [],
   });
+
+  console.log('state>>>>>', state);
 
   const onClose = () => {
     setState({
@@ -123,12 +127,16 @@ export default () => {
       title: '操作',
       valueType: 'option',
       key: 'option',
-      render: (text, record) => [
+      render: () => [
         <Comments key="comment" onClose={onClose} data={[]}>
           <a>查看评价</a>
         </Comments>,
-        <a key="view">查看基础信息</a>,
-        <a key="audit">资料修改审核</a>,
+        <BasicInfo key="view">
+          <a>查看基础信息</a>
+        </BasicInfo>,
+        <MassagerAudit key="audit">
+          <a>资料修改审核</a>
+        </MassagerAudit>,
       ],
     },
   ];

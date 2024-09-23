@@ -76,7 +76,7 @@ export default () => {
           okText="确定"
           cancelText="取消"
         >
-          <a>删除</a>,
+          <a>删除</a>
         </Popconfirm>,
         <EditPassword key="eidt">
           <a>修改密码</a>
