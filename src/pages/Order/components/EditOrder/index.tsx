@@ -1,11 +1,13 @@
+import { ORDER_STATUS } from '@/constants/index';
 import {
   ModalForm,
   ProFormDatePicker,
+  ProFormDigit,
   ProFormSelect,
-  ProFormText,
 } from '@ant-design/pro-components';
-import { Form, message } from 'antd';
+import { Form, message, Steps } from 'antd';
 import React, { type ReactElement } from 'react';
+import styles from './index.less';
 
 interface Props {
   children: ReactElement;
@@ -47,10 +49,11 @@ const EditOrderModal: React.FC<Props> = ({ children }) => {
     >
       <ProFormSelect
         width="lg"
-        options={[]}
+        options={ORDER_STATUS}
         name="orderStatus"
         label="订单状态"
         placeholder="请选择订单状态"
+        disabled
       />
       <ProFormSelect
         width="lg"
@@ -58,14 +61,28 @@ const EditOrderModal: React.FC<Props> = ({ children }) => {
         name="belongMassager"
         label="所属技师"
         placeholder="请选择所属技师"
-      />
-      <ProFormText width="lg" disabled name="orderAmount" label="订单金额" />
-      <ProFormText
-        width="lg"
         disabled
-        name="actualAmount"
-        label="技师所得金额"
       />
+      <span>时间节点</span>
+      <Steps
+        direction="vertical"
+        size="small"
+        current={1}
+        className={styles.steps}
+        items={[
+          { title: 'Finished', description: 'xxxx' },
+          {
+            title: 'In Progress',
+            description: 'ssss',
+          },
+          {
+            title: 'Waiting',
+            description: 'xxxx',
+          },
+        ]}
+      />
+      <ProFormDigit width="lg" name="orderAmount" label="订单金额" />
+      <ProFormDigit width="lg" name="actualAmount" label="技师所得金额" />
       <ProFormDatePicker width="lg" name="date" label="到账时间" />
     </ModalForm>
   );
