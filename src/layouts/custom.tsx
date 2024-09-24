@@ -14,6 +14,7 @@ const RightContent = () => {
 
   const onLogout = () => {
     console.log('退出');
+    history.replace('/login');
   };
 
   return {

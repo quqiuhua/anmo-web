@@ -19,13 +19,13 @@ export default [
       },
       {
         name: '技师用户',
-        path: '/user/massager',
-        component: './User/Massager',
+        path: '/user/worker',
+        component: './User/Worker',
       },
       {
         name: '注册技师审核',
-        path: '/user/massager-audit',
-        component: './User/MassagerAudit',
+        path: '/user/worker-audit',
+        component: './User/WorkerAudit',
       },
       {
         name: '技师项目审核',
@@ -41,8 +41,13 @@ export default [
     routes: [
       {
         name: '技师邀请',
-        path: '/rewards/massager-invite',
-        component: './Rewards/MassagerInvite',
+        path: '/rewards/worker-invite',
+        component: './Rewards/WorkerInvite',
+      },
+      {
+        name: '宣传海报配置',
+        path: '/rewards/poster-config',
+        component: './Rewards/PosterConfig',
       },
     ],
   },

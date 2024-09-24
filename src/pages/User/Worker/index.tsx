@@ -1,3 +1,4 @@
+import { WORKER_AND_CUSTOMER_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { useSetState } from 'ahooks';
@@ -93,6 +94,9 @@ export default () => {
       dataIndex: 'status',
       valueType: 'select',
       hideInTable: true,
+      fieldProps: {
+        options: WORKER_AND_CUSTOMER_STATUS,
+      },
     },
     {
       title: '技师评分',

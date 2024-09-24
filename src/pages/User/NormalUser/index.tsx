@@ -1,5 +1,5 @@
 import GiveCoupon from '@/components/Modals/GiveCoupon';
-import { ACCOUNT_STATUS } from '@/constants/index';
+import { WORKER_AND_CUSTOMER_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { history, request } from '@umijs/max';
@@ -76,7 +76,7 @@ export default () => {
       dataIndex: 'status',
       valueType: 'select',
       fieldProps: {
-        options: ACCOUNT_STATUS,
+        options: WORKER_AND_CUSTOMER_STATUS,
       },
       render: () => {
         return <Switch checked={true} />;

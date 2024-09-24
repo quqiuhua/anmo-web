@@ -1,3 +1,4 @@
+import { AUDIT_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
@@ -60,6 +61,9 @@ export default () => {
       title: '资料提交状态',
       dataIndex: 'status',
       valueType: 'select',
+      fieldProps: {
+        options: AUDIT_STATUS,
+      },
     },
     {
       title: '审核状态',
