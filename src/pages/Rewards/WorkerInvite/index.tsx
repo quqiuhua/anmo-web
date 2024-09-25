@@ -2,7 +2,7 @@ import RewardRuleModal from '@/components/Modals/RewardRule';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
-import { Avatar, Button } from 'antd';
+import { Avatar, Button, Popconfirm } from 'antd';
 import { useRef } from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -104,9 +104,16 @@ export default () => {
       valueType: 'option',
       key: 'option',
       render: (text, record) => [
-        <a key="editable" onClick={() => unBind(record)}>
-          解绑
-        </a>,
+        <Popconfirm
+          key="unbind"
+          title="解绑技师"
+          description="您确定要解绑吗?"
+          onConfirm={() => unBind(record)}
+          okText="确定"
+          cancelText="取消"
+        >
+          <a>解绑</a>
+        </Popconfirm>,
       ],
     },
   ];

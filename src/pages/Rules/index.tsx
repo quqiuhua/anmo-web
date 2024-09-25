@@ -18,7 +18,7 @@ export default () => {
             render: (props, doms) => {
               return (
                 <Row>
-                  <Col span={14} offset={4}>
+                  <Col span={14} offset={0}>
                     <Space>{doms[1]}</Space>
                   </Col>
                 </Row>
@@ -27,7 +27,7 @@ export default () => {
           }}
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 14 }}
-          layout="horizontal"
+          layout="vertical"
           onFinish={async (values) => {
             console.log(values);
             message.success('提交成功');
