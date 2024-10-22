@@ -74,15 +74,15 @@ export const ACCOUNT_STATUS = [
 export const LIMIT_TYPES = [
   {
     label: '女性',
-    value: 'FEMALE',
+    value: 2,
   },
   {
     label: '男性',
-    value: 'MALE',
+    value: 1,
   },
   {
     label: '无限制',
-    value: 'OTHER',
+    value: 3,
   },
 ];
 
@@ -92,11 +92,11 @@ export const LIMIT_TYPES = [
 export const WORKER_AND_CUSTOMER_STATUS = [
   {
     label: '正常',
-    value: 'NORMAL',
+    value: 1,
   },
   {
     label: '冻结',
-    value: 'FREEZE',
+    value: 2,
   },
 ];
 
@@ -105,20 +105,20 @@ export const WORKER_AND_CUSTOMER_STATUS = [
  */
 export const AUDIT_STATUS = [
   {
-    label: '资料提交中',
-    value: 'SUBMIT',
+    label: '资料待提交',
+    value: 1,
   },
   {
-    label: '审核中',
-    value: 'AUDIT_ING',
+    label: '待审核',
+    value: 2,
   },
   {
     label: '审核驳回',
-    value: 'AUDIT_REFUSE',
+    value: 3,
   },
   {
     label: '审核通过',
-    value: 'AUDIT_PASS',
+    value: 4,
   },
 ];
 
@@ -128,11 +128,11 @@ export const AUDIT_STATUS = [
 export const TARGET_USER = [
   {
     label: '亚健康群体',
-    value: 'SUB_HEALTH',
+    value: 1,
   },
   {
     label: '所有群体',
-    value: 'ALL',
+    value: 2,
   },
 ];
 
@@ -142,15 +142,15 @@ export const TARGET_USER = [
 export const PROJECT_LABEL = [
   {
     label: '超值特惠',
-    value: 'GREAT_VALUE',
+    value: 1,
   },
   {
     label: '放松解压',
-    value: 'RELAX',
+    value: 2,
   },
   {
     label: '仅限女性',
-    value: 'ONLY_FEMALE',
+    value: 3,
   },
 ];
 
@@ -160,15 +160,15 @@ export const PROJECT_LABEL = [
 export const WORKER_LABEL = [
   {
     label: '资深',
-    value: 'SENIOR',
+    value: 1,
   },
   {
     label: '专家',
-    value: 'SPECIALIST',
+    value: 2,
   },
   {
     label: '免出行费',
-    value: 'FREE_TRIP',
+    value: 4,
   },
 ];
 /**
@@ -177,19 +177,19 @@ export const WORKER_LABEL = [
 export const MASTER_PROJECT_STATUS = [
   {
     label: '申请服务',
-    value: 'APPLY',
+    value: 1,
   },
   {
     label: '审核中',
-    value: 'AUDIT_ING',
+    value: 2,
   },
   {
     label: '不可服务',
-    value: 'AUDIT_REFUSE',
+    value: 3,
   },
   {
     label: '可服务',
-    value: 'AUDIT_PASS',
+    value: 4,
   },
 ];
 
@@ -199,11 +199,11 @@ export const MASTER_PROJECT_STATUS = [
 export const PROJECT_STATUS = [
   {
     label: '启用',
-    value: 'ENABLE',
+    value: 1,
   },
   {
     label: '停用',
-    value: 'DISABLE',
+    value: 2,
   },
 ];
 
@@ -213,14 +213,25 @@ export const PROJECT_STATUS = [
 export const REWAED_STATUS = [
   {
     label: '待完成',
-    value: 'FINISH_NO',
+    value: 1,
   },
   {
     label: '待领取奖励',
-    value: 'FINISH_YES',
+    value: 2,
   },
   {
     label: '已领取',
-    value: 'DISTRIBUTE',
+    value: 3,
+  },
+];
+
+export const PASS_OR_NOTPASS_OPTIONS = [
+  {
+    label: '通过',
+    value: 4,
+  },
+  {
+    label: '不通过',
+    value: 3,
   },
 ];

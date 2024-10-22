@@ -5,7 +5,7 @@ import { requestConfig } from './utils/request';
 
 // 更多信息见文档：https://umijs.org/docs/api/runtime-config#getinitialstate
 export async function getInitialState(): Promise<{ name: string }> {
-  return { name: '秋华测试' };
+  return { name: '系统管理员' };
 }
 
 // NOTE: Layout 运行时配置

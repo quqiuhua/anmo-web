@@ -1,9 +1,9 @@
 import { AUDIT_STATUS } from '@/constants/index';
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import type { ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { request } from '@umijs/max';
-import { Popconfirm } from 'antd';
-import { useRef } from 'react';
+import { useModel } from '@umijs/max';
+import dayjs from 'dayjs';
+import BasicInfo from '../Worker/components/BasicInfo';
 
 export const waitTimePromise = async (time: number = 100) => {
   return new Promise((resolve) => {
@@ -18,12 +18,15 @@ export const waitTime = async (time: number = 100) => {
 };
 
 type GithubIssueItem = {
-  userId: string;
-  name: string;
+  masterId: string;
+  nickName: string;
   status: string;
   state: string;
-  phoneNumber: number;
-  registerTime: number;
+  masterStatus: 1 | 2;
+  phone: number;
+  regTime: string;
+  auditStatus: number;
+  repeatFlag: number;
   comments: Record<string, any>[];
   created_at: string;
   updated_at: string;
@@ -31,64 +34,92 @@ type GithubIssueItem = {
 };
 
 export default () => {
-  const actionRef = useRef<ActionType>();
+  const { queryWorkerData } = useModel('worker');
 
-  const goDetail = () => {};
-
-  const handleDelete = () => {};
+  const onRequest = async ({ current, ...rest }: Record<string, any>) => {
+    const res =
+      (await queryWorkerData.run({ ...rest, pageNum: current })) || {};
+    return {
+      data: res.list || [],
+      total: res.total,
+      success: true,
+    };
+  };
 
   const columns: ProColumns<GithubIssueItem>[] = [
     {
       title: '真实姓名',
-      dataIndex: 'realName',
+      dataIndex: 'masterName',
+    },
+    {
+      title: '昵称',
+      hideInSearch: true,
+      dataIndex: 'nickName',
     },
     {
       title: '手机号',
-      dataIndex: 'phoneNumber',
+      dataIndex: 'phone',
     },
     {
       title: '注册时间',
-      key: 'registerTime',
-      dataIndex: 'registerTime',
+      key: 'regTime',
+      dataIndex: 'regTime',
+      width: 160,
+      search: {
+        transform: (value) => {
+          return {
+            startDate: value[0],
+            endDate: value[1],
+          };
+        },
+      },
       valueType: 'dateRange',
-    },
-    {
-      title: '身份证号',
-      dataIndex: 'IDNumber',
-      hideInSearch: true,
-    },
-    {
-      title: '资料提交状态',
-      dataIndex: 'status',
-      valueType: 'select',
-      fieldProps: {
-        options: AUDIT_STATUS,
+      render: (_, record) => {
+        return dayjs(record.regTime).format('YYYY-MM-DD HH:mm');
       },
     },
     {
-      title: '审核状态',
+      title: '资料提交状态',
       dataIndex: 'auditStatus',
-      hideInSearch: true,
+      valueType: 'select',
+      valueEnum: {
+        1: { text: '资料待提交', status: 'Processing' },
+        2: {
+          text: '待审核',
+          status: 'Processing',
+        },
+        3: {
+          text: '审核驳回',
+          status: 'Error',
+        },
+        4: {
+          text: '审核通过',
+          status: 'Success',
+        },
+      },
+      fieldProps: {
+        defaultValue: 2,
+        options: AUDIT_STATUS,
+      },
     },
     {
       title: '操作',
       valueType: 'option',
       key: 'option',
-      render: () => [
-        <a key="editable" onClick={() => goDetail()}>
-          查看详情
-        </a>,
-        <Popconfirm
-          key="audit"
-          title="删除审核数据"
-          description="您确定要删除此条数据吗?"
-          onConfirm={handleDelete}
-          okText="确定"
-          cancelText="取消"
-        >
-          <a key="audit">删除</a>
-        </Popconfirm>,
-      ],
+      render: (_, record) => {
+        const masterId = record.masterId;
+        const showAudit = record.auditStatus === 2;
+        return [
+          showAudit && (
+            <BasicInfo key="audit" mode="audit" masterId={masterId}>
+              <a>资料审核</a>
+            </BasicInfo>
+          ),
+          <BasicInfo mode="detail" key="view" masterId={masterId}>
+            <a>查看详情</a>
+          </BasicInfo>,
+        ];
+      },
     },
   ];
 
@@ -96,31 +127,9 @@ export default () => {
     <PageContainer>
       <ProTable<GithubIssueItem>
         columns={columns}
-        actionRef={actionRef}
         cardBordered
-        request={async (params, sort, filter) => {
-          console.log(sort, filter);
-          await waitTime(2000);
-          return request<{
-            data: GithubIssueItem[];
-          }>('https://proapi.azurewebsites.net/github/issues', {
-            params,
-          });
-        }}
-        editable={{
-          type: 'multiple',
-        }}
-        columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
-          persistenceType: 'localStorage',
-          defaultValue: {
-            option: { fixed: 'right', disable: true },
-          },
-          onChange(value) {
-            console.log('value: ', value);
-          },
-        }}
-        rowKey="id"
+        request={onRequest}
+        rowKey="masterId"
         search={{
           labelWidth: 'auto',
           collapseRender: false,
@@ -128,8 +137,8 @@ export default () => {
         }}
         options={false}
         pagination={{
+          defaultCurrent: 1,
           pageSize: 10,
-          onChange: (page) => console.log(page),
         }}
         dateFormatter="string"
         headerTitle="技师审核列表"

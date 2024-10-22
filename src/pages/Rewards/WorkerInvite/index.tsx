@@ -1,8 +1,8 @@
 import RewardRuleModal from '@/components/Modals/RewardRule';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { request } from '@umijs/max';
-import { Avatar, Button, Popconfirm } from 'antd';
+import { useModel } from '@umijs/max';
+import { Button, Popconfirm } from 'antd';
 import { useRef } from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -23,7 +23,7 @@ type GithubIssueItem = {
   status: string;
   state: string;
   phoneNumber: number;
-  registerTime: number;
+  inviteDate: number;
   comments: Record<string, any>[];
   created_at: string;
   updated_at: string;
@@ -31,7 +31,21 @@ type GithubIssueItem = {
 };
 
 export default () => {
+  const { queryWorkerInviteList } = useModel('worker');
   const actionRef = useRef<ActionType>();
+
+  const onRequest = async ({
+    current,
+    ...rest
+  }: Record<string, string | number>) => {
+    const res =
+      (await queryWorkerInviteList.run({ ...rest, pageNum: current })) || {};
+    return {
+      data: res.list || {},
+      total: res.total,
+      success: true,
+    };
+  };
 
   const unBind = (record: GithubIssueItem) => {
     console.log('record>>>>', record);
@@ -39,28 +53,20 @@ export default () => {
 
   const columns: ProColumns<GithubIssueItem>[] = [
     {
-      title: '技师用户',
-      dataIndex: 'name',
+      title: '技师昵称',
+      dataIndex: 'inviterNickName',
       hideInTable: true,
     },
     {
       disable: true,
       title: '技师手机号',
       hideInTable: true,
-      dataIndex: 'phoneNumber',
+      dataIndex: 'inviterPhone',
     },
     {
       title: '邀请人',
-      dataIndex: 'inviter',
+      dataIndex: 'inviterNickName',
       hideInSearch: true,
-      render: () => {
-        return (
-          <>
-            <Avatar />
-            <a style={{ marginLeft: 12 }}>测试数据</a>
-          </>
-        );
-      },
     },
     {
       disable: true,
@@ -70,18 +76,29 @@ export default () => {
     },
     {
       title: '邀请时间',
-      key: 'inviteTime',
-      dataIndex: 'inviteTime',
+      key: 'inviteDate',
+      dataIndex: 'inviteDate',
       valueType: 'dateRange',
+      search: {
+        transform: (value) => {
+          return {
+            startDate: value[0],
+            endDate: value[1],
+          };
+        },
+      },
+      render: (_, record) => {
+        return record.inviteDate;
+      },
     },
     {
-      title: '剩余天数',
-      dataIndex: 'remainingDays',
+      title: '剩余绑定天数',
+      dataIndex: 'availableDays',
       hideInSearch: true,
     },
     {
       title: '受邀人',
-      dataIndex: 'invitee',
+      dataIndex: 'inviteeNickName',
       hideInSearch: true,
     },
     {
@@ -91,12 +108,12 @@ export default () => {
     },
     {
       title: '完单数量',
-      dataIndex: 'finishedOrder',
+      dataIndex: 'finishTimes',
       hideInSearch: true,
     },
     {
       title: '剩余天数结束前流水额',
-      dataIndex: 'amount',
+      dataIndex: 'inviteeFlowAmount',
       hideInSearch: true,
     },
     {
@@ -124,34 +141,13 @@ export default () => {
         columns={columns}
         actionRef={actionRef}
         cardBordered
-        request={async (params, sort, filter) => {
-          console.log(sort, filter);
-          await waitTime(2000);
-          return request<{
-            data: GithubIssueItem[];
-          }>('https://proapi.azurewebsites.net/github/issues', {
-            params,
-          });
-        }}
-        editable={{
-          type: 'multiple',
-        }}
-        columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
-          persistenceType: 'localStorage',
-          defaultValue: {
-            option: { fixed: 'right', disable: true },
-          },
-          onChange(value) {
-            console.log('value: ', value);
-          },
-        }}
+        request={onRequest}
         toolBarRender={() => [
           <RewardRuleModal key="button">
             <Button type="primary">配置奖励机制</Button>
           </RewardRuleModal>,
         ]}
-        rowKey="id"
+        rowKey="masterId"
         search={{
           labelWidth: 'auto',
           collapseRender: false,

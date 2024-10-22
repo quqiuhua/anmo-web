@@ -3,8 +3,8 @@ import { type RequestConfig, history } from '@umijs/max';
 import { message } from 'antd';
 
 export const requestConfig: RequestConfig = {
-  timeout: 1000,
-  // NOTE: 错误处理
+  timeout: 30000,
+  withCredentials: true,
   errorConfig: {
     // 错误抛出
     errorThrower: (res: any) => {
@@ -16,15 +16,15 @@ export const requestConfig: RequestConfig = {
       console.log(response, opts);
 
       if (!!response && response.status === 400) {
-        const data = response.clone().json();
-        message.error(data.error.message);
+        const data = response.data;
+        message.error(data.message || '接口异常～');
         history.push('/404');
         return;
       }
 
       if (!!response && response.status === 500) {
-        const data = response.clone().json();
-        message.error(data.error.message);
+        const data = response.data;
+        message.error(data.message || '接口异常~');
         return;
       }
 
@@ -34,8 +34,9 @@ export const requestConfig: RequestConfig = {
         return;
       }
 
-      if (!!response && response.status === 401) {
-        message.error('登录失效，即将跳转至登录页面');
+      if (response.data?.authFilterErrorCode === '20003') {
+        message.error('登录失效, 请重新登录~');
+        history.push('/login');
         return;
       }
     },
@@ -45,8 +46,7 @@ export const requestConfig: RequestConfig = {
   requestInterceptors: [
     (config: any) => {
       // 拦截请求配置，进行个性化处理。
-      const url = config.url.concat('?token = 123');
-      return { ...config, url };
+      return config;
     },
   ],
 
@@ -55,9 +55,7 @@ export const requestConfig: RequestConfig = {
     (response) => {
       // 拦截响应数据，进行个性化处理
       const { data } = response;
-      if (!data.success) {
-        message.error('接口错误');
-      }
+      console.log('response>>>>', data);
       return response;
     },
   ],

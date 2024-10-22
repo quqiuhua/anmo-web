@@ -28,10 +28,18 @@ declare namespace API {
 
   interface Result_PageInfo_UserInfo__ {
     success?: boolean;
-    errorMessage?: string;
-    data?: PageInfo_UserInfo_;
+    message?: string;
+    data?: string;
   }
 
+  interface Result_PageInfo_WorkerInfo__ {
+    success?: boolean;
+    message?: string;
+    data?: {
+      list: any[];
+      total: number;
+    };
+  }
   interface Result_UserInfo_ {
     success?: boolean;
     errorMessage?: string;

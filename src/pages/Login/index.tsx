@@ -1,4 +1,5 @@
 import Visible from '@/components/Visible';
+import { jsonParse, jsonStringfy } from '@/utils/jsonMethod';
 import { LockOutlined, MobileOutlined, UserOutlined } from '@ant-design/icons';
 import {
   ProForm,
@@ -6,19 +7,16 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { useSetState } from 'ahooks';
-import { Button, Card, message } from 'antd';
-import React from 'react';
+import { history, useModel } from '@umijs/max';
+import { Button, Card, Form, message } from 'antd';
+import CryptoJs from 'crypto-js';
+import React, { useEffect } from 'react';
 import styles from './index.less';
 
-interface State {
-  mode: 'login' | 'forget-password' | 'reset-password';
-}
-
 const Login: React.FC = () => {
-  const [state, setState] = useSetState<State>({
-    mode: 'login',
-  });
+  const [form] = Form.useForm();
+  const phone = Form.useWatch('phone', form);
+  const { getVerifyCode, loginApi, state, setState } = useModel('login');
   const showNormalLoginContent = state.mode === 'login';
   const showForgetContent = state.mode === 'forget-password';
   const showResetContent = state.mode === 'reset-password';
@@ -28,16 +26,63 @@ const Login: React.FC = () => {
     'reset-password': '重置密码',
   };
 
-  const onChangeMode = () => {
-    setState({
-      mode: 'forget-password',
-    });
-  };
+  // const onChangeMode = () => {
+  //   setState({
+  //     mode: 'forget-password',
+  //   });
+  // };
+
+  useEffect(() => {
+    const userInfoStr = localStorage.getItem('userInfo') || '';
+    const userInfo = jsonParse(userInfoStr, {});
+    if (userInfo.phone) {
+      form.setFieldsValue({
+        phone: userInfo.phone,
+        password: userInfo.password,
+        rememberUserInfo: true,
+      });
+    }
+  }, []);
 
   const onBack = () => {
     setState({
       mode: 'login',
     });
+  };
+
+  const onGetCaptcha = async () => {
+    if (!!phone) {
+      const res = await getVerifyCode.run({
+        phone,
+      });
+      if (res) {
+        message.success('获取验证码成功！');
+      }
+    } else {
+      message.warning('请先输入手机号');
+      return Promise.reject();
+    }
+  };
+
+  const onSubmit = async (values: Record<string, any>) => {
+    const password = CryptoJs.MD5(values.password).toString();
+    if (values.rememberUserInfo) {
+      const userInfo: string = jsonStringfy({
+        phone,
+        password: values.password,
+      });
+      localStorage.setItem('userInfo', userInfo);
+    }
+    const params = {
+      phone: values.phone,
+      password,
+      verifyCode: values.verifyCode,
+    };
+    const res = await loginApi.run(params);
+    if (res.success) {
+      message.success('登录成功！');
+      history.replace('/user/normal');
+    }
   };
 
   return (
@@ -50,7 +95,9 @@ const Login: React.FC = () => {
         <div className={styles.right}>
           <h3 className={styles.title}>{titleMap[state.mode]}</h3>
           <ProForm
+            form={form}
             className={styles['pro-form']}
+            onFinish={onSubmit}
             submitter={{
               render: (props) => {
                 return showNormalLoginContent
@@ -86,18 +133,19 @@ const Login: React.FC = () => {
               },
             }}
           >
+            {/* 普通登录 手机号密码 + 验证码  */}
             <Visible visible={showNormalLoginContent}>
               <ProFormText
-                name="username"
+                name="phone"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={'prefixIcon'} />,
                 }}
-                placeholder="请输入用户名"
+                placeholder="请输入手机号"
                 rules={[
                   {
                     required: true,
-                    message: '请输入用户名!',
+                    message: '请输入手机号!',
                   },
                 ]}
               />
@@ -115,35 +163,55 @@ const Login: React.FC = () => {
                   },
                 ]}
               />
-              <ProFormText
-                width={185}
-                name="identifyCode"
+              <ProFormCaptcha
                 fieldProps={{
                   size: 'large',
+                  prefix: <LockOutlined className={'prefixIcon'} />,
                 }}
-                placeholder="请输入验证码"
+                captchaProps={{
+                  size: 'large',
+                }}
+                dependencies={['phone']}
+                placeholder={'请输入验证码'}
+                captchaTextRender={(timing, count) => {
+                  if (timing) {
+                    return `${count} ${'获取验证码'}`;
+                  }
+                  return '获取验证码';
+                }}
+                name="verifyCode"
+                rules={[
+                  {
+                    required: true,
+                    message: '请输入验证码！',
+                  },
+                  {
+                    max: 4,
+                    message: '请输入4位数字验证码！',
+                  },
+                ]}
+                onGetCaptcha={onGetCaptcha}
               />
               <div
                 style={{
                   marginBlockEnd: 24,
                 }}
               >
-                <ProFormCheckbox noStyle name="rememberPassword">
-                  <span className={styles.remember}>记住密码</span>
+                <ProFormCheckbox noStyle name="rememberUserInfo">
+                  <span className={styles.remember}>记住账户和密码</span>
                 </ProFormCheckbox>
-                <ProFormCheckbox noStyle name="rememberUser">
-                  <span className={styles.remember}>记住用户</span>
-                </ProFormCheckbox>
-                <a
+                {/* <a
                   style={{
                     float: 'right',
                   }}
                   onClick={onChangeMode}
                 >
                   忘记密码
-                </a>
+                </a> */}
               </div>
             </Visible>
+
+            {/* 忘记密码 */}
             <Visible visible={showForgetContent}>
               <ProFormText
                 fieldProps={{
@@ -190,6 +258,8 @@ const Login: React.FC = () => {
                 }}
               />
             </Visible>
+
+            {/* 忘记密码-重置密码 */}
             <Visible visible={showResetContent}>
               <ProFormText.Password
                 name="password"

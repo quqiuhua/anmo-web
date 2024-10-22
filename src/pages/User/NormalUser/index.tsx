@@ -2,7 +2,7 @@ import GiveCoupon from '@/components/Modals/GiveCoupon';
 import { WORKER_AND_CUSTOMER_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { history, request } from '@umijs/max';
+import { history } from '@umijs/max';
 import { Avatar, Switch } from 'antd';
 import { useRef } from 'react';
 
@@ -113,11 +113,9 @@ export default () => {
         request={async (params, sort, filter) => {
           console.log(sort, filter);
           await waitTime(2000);
-          return request<{
-            data: GithubIssueItem[];
-          }>('https://proapi.azurewebsites.net/github/issues', {
-            params,
-          });
+          return {
+            data: [{ name: 'xxx' }],
+          };
         }}
         editable={{
           type: 'multiple',

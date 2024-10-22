@@ -1,10 +1,10 @@
 import { WORKER_AND_CUSTOMER_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { useSetState } from 'ahooks';
-import { Avatar, Switch } from 'antd';
+import { useModel } from '@umijs/max';
+import { Badge } from 'antd';
+import dayjs from 'dayjs';
 import { useRef } from 'react';
-import MassagerAudit from './components/AuditModal';
 import BasicInfo from './components/BasicInfo';
 import Comments from './components/Comments';
 
@@ -21,72 +21,72 @@ export const waitTime = async (time: number = 100) => {
 };
 
 type GithubIssueItem = {
-  userId: string;
-  name: string;
+  masterId: string;
+  nickName: string;
   status: string;
   state: string;
-  phoneNumber: number;
-  registerTime: number;
+  masterStatus: 1 | 2;
+  phone: number;
+  regTime: string;
+  repeatFlag: number;
   comments: Record<string, any>[];
   created_at: string;
   updated_at: string;
   closed_at?: string;
 };
 
-interface State {
-  openMassagerInfoModal: boolean;
-  openType?: 'detail' | 'audit';
-  commentsData: Record<string, any>[];
-}
-
 export default () => {
+  const { queryWorkerData } = useModel('worker');
   const actionRef = useRef<ActionType>();
-  const [state, setState] = useSetState<State>({
-    openMassagerInfoModal: false,
-    commentsData: [],
-  });
 
-  console.log('state>>>>>', state);
-
-  const onClose = () => {
-    setState({
-      openMassagerInfoModal: false,
-    });
+  const onRequest = async ({ current, ...rest }: Record<string, any>) => {
+    const res =
+      (await queryWorkerData.run({ ...rest, pageNum: current })) || {};
+    return {
+      data: res.list || {},
+      total: res.total,
+      success: true,
+    };
   };
 
   const columns: ProColumns<GithubIssueItem>[] = [
     {
-      title: '用户昵称',
-      dataIndex: 'name',
+      title: '技师昵称',
+      dataIndex: 'nickName',
+      width: 100,
       fixed: 'left',
-      render: () => {
-        return (
-          <>
-            <Avatar />
-            <a style={{ marginLeft: 12 }}>测试数据</a>
-          </>
-        );
-      },
     },
     {
       disable: true,
       title: '手机号',
-      dataIndex: 'phoneNumber',
+      dataIndex: 'phone',
     },
     {
       title: '注册时间',
-      key: 'registerTime',
-      dataIndex: 'registerTime',
+      key: 'regTime',
+      dataIndex: 'regTime',
+      width: 160,
+      search: {
+        transform: (value) => {
+          return {
+            startDate: value[0],
+            endDate: value[1],
+          };
+        },
+      },
       valueType: 'dateRange',
+      render: (_, record) => {
+        return dayjs(record.regTime).format('YYYY-MM-DD HH:mm');
+      },
     },
     {
       title: '接单数量',
-      dataIndex: 'acceptOrderCount',
+      dataIndex: 'confirmOrderCount',
       hideInSearch: true,
     },
     {
       title: '完单数量',
-      dataIndex: 'finishedOrderCount',
+      dataIndex: 'finishOrderCount',
       hideInSearch: true,
     },
     {
@@ -100,8 +100,16 @@ export default () => {
     },
     {
       title: '技师评分',
-      dataIndex: 'massagerGrade',
+      dataIndex: 'evaluateAverageScore',
       valueType: 'slider',
+      search: {
+        transform: (value) => {
+          return {
+            evaluateScoreMin: value[0],
+            evaluateScoreMax: value[1],
+          };
+        },
+      },
       fieldProps: {
         defaultValue: [0, 5],
         min: 0,
@@ -113,35 +121,53 @@ export default () => {
     },
     {
       title: '账户状态',
-      dataIndex: 'status',
+      dataIndex: 'masterStatusStr',
       hideInSearch: true,
-      render: () => {
-        return <Switch checked={true} />;
+      render: (text, record) => {
+        const status = record.masterStatus;
+        const propMap = {
+          '1': {
+            text: '正常',
+            status: 'processing',
+          },
+          '2': {
+            text: '冻结',
+            status: 'default',
+          },
+        };
+        return <Badge text={text} status={propMap[status]?.status} />;
       },
     },
     {
       title: '是否有修改',
-      dataIndex: 'status',
+      dataIndex: 'repeatFlag',
       hideInSearch: true,
-      render: () => {
-        return <Switch checked={true} />;
+      render: (repeatFlag) => {
+        return repeatFlag === 1 ? '是' : '否';
       },
     },
     {
       title: '操作',
       valueType: 'option',
       key: 'option',
-      render: () => [
-        <Comments key="comment" onClose={onClose} data={[]}>
-          <a>查看评价</a>
-        </Comments>,
-        <BasicInfo key="view">
-          <a>查看基础信息</a>
-        </BasicInfo>,
-        <MassagerAudit key="audit">
-          <a>资料修改审核</a>
-        </MassagerAudit>,
-      ],
+      width: 300,
+      fixed: 'right',
+      render: (_, record) => {
+        const { masterId = '', repeatFlag = '' } = record;
+        return [
+          <Comments key="comment" masterId={masterId}>
+            <a>查看评价</a>
+          </Comments>,
+          <BasicInfo key="view" mode="detail" masterId={masterId}>
+            <a>查看基础信息</a>
+          </BasicInfo>,
+          repeatFlag === 1 && (
+            <BasicInfo masterId={masterId} mode="audit" key="audit">
+              <a>资料修改审核</a>
+            </BasicInfo>
+          ),
+        ];
+      },
     },
   ];
 
@@ -151,28 +177,11 @@ export default () => {
         columns={columns}
         actionRef={actionRef}
         cardBordered
-        request={async (params, sort, filter) => {
-          console.log(sort, filter);
-          await waitTime(2000);
-          return {
-            data: [{ id: '11', name: 'name' }],
-            total: 10,
-          };
-        }}
+        request={onRequest}
         editable={{
           type: 'multiple',
         }}
-        columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
-          persistenceType: 'localStorage',
-          defaultValue: {
-            option: { fixed: 'right', disable: true },
-          },
-          onChange(value) {
-            console.log('value: ', value);
-          },
-        }}
-        rowKey="id"
+        rowKey="masterId"
         search={{
           labelWidth: 'auto',
           collapseRender: false,
@@ -180,11 +189,11 @@ export default () => {
         }}
         options={false}
         scroll={{
-          x: 1400,
+          x: 1300,
         }}
         pagination={{
+          defaultCurrent: 1,
           pageSize: 10,
-          onChange: (page) => console.log(page),
         }}
         dateFormatter="string"
         headerTitle="技师用户列表"

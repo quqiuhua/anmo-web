@@ -5,6 +5,7 @@ import { Dropdown } from 'antd';
 
 const RightContent = () => {
   const { initialState } = useModel('@@initialState');
+  const { setCookie } = useModel('login');
   const { name } = initialState;
   const location = useLocation();
 
@@ -13,7 +14,7 @@ const RightContent = () => {
   }
 
   const onLogout = () => {
-    console.log('退出');
+    setCookie('');
     history.replace('/login');
   };
 

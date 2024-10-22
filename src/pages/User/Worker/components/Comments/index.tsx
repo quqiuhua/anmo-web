@@ -1,13 +1,12 @@
 import StarIcon from '@/components/StarIcon';
 import { ProList } from '@ant-design/pro-components';
 import { Modal, Rate, Space, Tag } from 'antd';
-import React, { type ReactElement, useState } from 'react';
+import React, { type ReactElement, useEffect, useState } from 'react';
 import styles from './index.less';
 
 interface Props {
-  data: Record<string, any>[];
-  onClose: () => void;
   children: ReactElement;
+  masterId: string;
 }
 
 const defaultData = [
@@ -38,10 +37,13 @@ const defaultData = [
 ];
 
 type DataItem = (typeof defaultData)[number];
-const CommentsModal: React.FC<Props> = ({ data, children }) => {
+const CommentsModal: React.FC<Props> = ({ children }) => {
   const [open, setOpen] = useState(false);
   const setDataSource = () => {};
-  console.log('data>>>>', data);
+  useEffect(() => {
+    if (open) {
+    }
+  }, [open]);
   return (
     <>
       <span onClick={() => setOpen(true)}>{children && children}</span>
@@ -50,6 +52,7 @@ const CommentsModal: React.FC<Props> = ({ data, children }) => {
         closeIcon={false}
         open={open}
         footer={false}
+        onClose={() => setOpen(false)}
         maskClosable
       >
         <ProList<DataItem>
@@ -72,6 +75,10 @@ const CommentsModal: React.FC<Props> = ({ data, children }) => {
             },
           }}
           onDataSourceChange={setDataSource}
+          pagination={{
+            pageSize: 5,
+            defaultCurrent: 1,
+          }}
           metas={{
             title: {
               dataIndex: 'name',

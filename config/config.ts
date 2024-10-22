@@ -7,7 +7,18 @@ export default defineConfig({
   model: {},
   initialState: {},
   request: {},
+  reactQuery: {},
   layout: {},
+  proxy: {
+    '/tech': {
+      target: 'https://centertest.yxdaojia.cn',
+      changeOrigin: true,
+    },
+    '/user-center': {
+      target: 'https://centertest.yxdaojia.cn',
+      changeOrigin: true,
+    },
+  },
   routes,
   npmClient: 'pnpm',
   // @umijs/max 内置了 styled-components 样式方案。
