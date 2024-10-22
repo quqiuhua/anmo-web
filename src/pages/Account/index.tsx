@@ -4,7 +4,7 @@ import { ACCOUNT_STATUS } from '@/constants/index';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { request } from '@umijs/max';
+import { request, useRouteData } from '@umijs/max';
 import { Button, Popconfirm } from 'antd';
 import { useRef } from 'react';
 
@@ -34,6 +34,8 @@ type GithubIssueItem = {
 };
 
 export default () => {
+  const { route } = useRouteData();
+  document.title = route.name;
   const actionRef = useRef<ActionType>();
 
   const deleteAccount = (record: GithubIssueItem) => {

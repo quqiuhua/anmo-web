@@ -3,9 +3,12 @@ import {
   ProForm,
   ProFormUploadButton,
 } from '@ant-design/pro-components';
+import { useRouteData } from '@umijs/max';
 import { Card, Col, message, Row, Space } from 'antd';
 
 export default () => {
+  const { route } = useRouteData();
+  document.title = route.name;
   return (
     <PageContainer title="宣传海报配置">
       <Card>

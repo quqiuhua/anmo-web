@@ -5,6 +5,7 @@ export default [
   {
     path: '/login',
     layout: false,
+    name: '有幸到家',
     component: './Login',
   },
   {
@@ -14,6 +15,7 @@ export default [
     routes: [
       {
         name: '普通用户',
+        title: '普通用户',
         path: '/user/normal',
         component: './User/NormalUser',
       },

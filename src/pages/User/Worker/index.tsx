@@ -1,7 +1,7 @@
 import { WORKER_AND_CUSTOMER_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
+import { useModel, useRouteData } from '@umijs/max';
 import { Badge } from 'antd';
 import dayjs from 'dayjs';
 import { useRef } from 'react';
@@ -36,6 +36,8 @@ type GithubIssueItem = {
 };
 
 export default () => {
+  const { route } = useRouteData();
+  document.title = route.name;
   const { queryWorkerData } = useModel('worker');
   const actionRef = useRef<ActionType>();
 

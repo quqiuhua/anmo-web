@@ -1,6 +1,6 @@
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { request } from '@umijs/max';
+import { request, useRouteData } from '@umijs/max';
 import { useRef } from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -29,6 +29,8 @@ type GithubIssueItem = {
 };
 
 export default () => {
+  const { route } = useRouteData();
+  document.title = route.name;
   const actionRef = useRef<ActionType>();
 
   const columns: ProColumns<GithubIssueItem>[] = [

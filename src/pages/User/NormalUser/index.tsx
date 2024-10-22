@@ -2,7 +2,7 @@ import GiveCoupon from '@/components/Modals/GiveCoupon';
 import { WORKER_AND_CUSTOMER_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { history } from '@umijs/max';
+import { history, useRouteData } from '@umijs/max';
 import { Avatar, Switch } from 'antd';
 import { useRef } from 'react';
 
@@ -32,6 +32,8 @@ type GithubIssueItem = {
 };
 
 export default () => {
+  const { route } = useRouteData();
+  document.title = route.name;
   const actionRef = useRef<ActionType>();
 
   const onOfferDiscountCard = () => {};

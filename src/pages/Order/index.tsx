@@ -1,6 +1,7 @@
 import { ORDER_STATUS, USER_RATING_ENMS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
+import { useRouteData } from '@umijs/max';
 import { Popconfirm, Rate } from 'antd';
 import { useRef } from 'react';
 import EditOrder from './components/EditOrder';
@@ -31,6 +32,8 @@ type GithubIssueItem = {
 };
 
 export default () => {
+  const { route } = useRouteData();
+  document.title = route.name;
   const actionRef = useRef<ActionType>();
 
   const cancelOrder = (record: GithubIssueItem) => {

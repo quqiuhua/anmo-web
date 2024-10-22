@@ -1,7 +1,7 @@
 import { AUDIT_STATUS } from '@/constants/index';
 import type { ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
+import { useModel, useRouteData } from '@umijs/max';
 import dayjs from 'dayjs';
 import BasicInfo from '../Worker/components/BasicInfo';
 
@@ -34,6 +34,8 @@ type GithubIssueItem = {
 };
 
 export default () => {
+  const { route } = useRouteData();
+  document.title = route.name;
   const { queryWorkerData } = useModel('worker');
 
   const onRequest = async ({ current, ...rest }: Record<string, any>) => {
@@ -97,8 +99,8 @@ export default () => {
           status: 'Success',
         },
       },
+      initialValue: 2,
       fieldProps: {
-        defaultValue: 2,
         options: AUDIT_STATUS,
       },
     },

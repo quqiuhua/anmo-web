@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { history, request } from '@umijs/max';
+import { history, request, useRouteData } from '@umijs/max';
 import { Button, Popconfirm } from 'antd';
 import React, { useRef } from 'react';
 
@@ -31,6 +31,8 @@ type GithubIssueItem = {
 };
 
 export default (): React.FC => {
+  const { route } = useRouteData();
+  document.title = route.name;
   const actionRef = useRef<ActionType>();
 
   const goEditPage = () => {

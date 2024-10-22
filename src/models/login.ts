@@ -31,6 +31,7 @@ const useLogin = () => {
     formatResult: (res) => {
       if (res.data && res.success) {
         setCookie(res.data);
+        localStorage.setItem('COOKIE_AUTH_TICKET', res.data);
         setState({
           isLoggedIn: true,
         });

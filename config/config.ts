@@ -6,9 +6,12 @@ export default defineConfig({
   access: {},
   model: {},
   initialState: {},
+  favicons: '',
   request: {},
   reactQuery: {},
-  layout: {},
+  layout: {
+    title: '有幸到家',
+  },
   proxy: {
     '/tech': {
       target: 'https://centertest.yxdaojia.cn',

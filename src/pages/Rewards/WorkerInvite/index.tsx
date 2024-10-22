@@ -1,7 +1,7 @@
 import RewardRuleModal from '@/components/Modals/RewardRule';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
+import { useModel, useRouteData } from '@umijs/max';
 import { Button, Popconfirm } from 'antd';
 import { useRef } from 'react';
 
@@ -31,6 +31,8 @@ type GithubIssueItem = {
 };
 
 export default () => {
+  const { route } = useRouteData();
+  document.title = route.name;
   const { queryWorkerInviteList } = useModel('worker');
   const actionRef = useRef<ActionType>();
 

@@ -1,20 +1,26 @@
 import logo from '@/assets/logo.png';
 import { LogoutOutlined } from '@ant-design/icons';
 import { history, useLocation, useModel } from '@umijs/max';
+import { useMount } from 'ahooks';
 import { Dropdown } from 'antd';
 
 const RightContent = () => {
   const { initialState } = useModel('@@initialState');
-  const { setCookie } = useModel('login');
   const { name } = initialState;
   const location = useLocation();
+  const token = localStorage.getItem('COOKIE_AUTH_TICKET');
+  document.title = '有幸到家';
 
-  if (location.pathname === '/') {
-    history.replace('/user/normal');
-  }
-
+  useMount(() => {
+    if (location.pathname === '/' && !token) {
+      history.replace('/login');
+    }
+    if (location.pathname === '/' && token) {
+      history.replace('/user/worker');
+    }
+  });
   const onLogout = () => {
-    setCookie('');
+    localStorage.removeItem('COOKIE_AUTH_TICKET');
     history.replace('/login');
   };
 

@@ -7,15 +7,18 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { history, useModel } from '@umijs/max';
+import { history, useModel, useRouteData } from '@umijs/max';
 import { Button, Card, Form, message } from 'antd';
 import CryptoJs from 'crypto-js';
 import React, { useEffect } from 'react';
 import styles from './index.less';
 
 const Login: React.FC = () => {
+  const { route } = useRouteData();
+  document.title = route.name;
   const [form] = Form.useForm();
   const phone = Form.useWatch('phone', form);
+  console.log('route>>>>>', route);
   const { getVerifyCode, loginApi, state, setState } = useModel('login');
   const showNormalLoginContent = state.mode === 'login';
   const showForgetContent = state.mode === 'forget-password';
