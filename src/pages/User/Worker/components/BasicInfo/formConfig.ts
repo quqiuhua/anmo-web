@@ -7,5 +7,4 @@ export const FormConfig = [
     placeholder: '',
     required: true,
   },
-  {},
 ];

@@ -2,10 +2,10 @@ export const getFormValues = (res: any) => {
   const { certificateList = [] } = res;
   // 1 身份证
   const ID_CARD = certificateList?.find((item) => item.type === 1) || {};
-  const ID_CARD_IMG = ID_CARD?.imageUrls?.map((item) => ({
-    url: item,
-    status: 'done',
-  }));
+  const ID_CARD_IMG = [
+    { url: ID_CARD.imageFront, status: 'done' },
+    { url: ID_CARD.imageBack, status: 'done' },
+  ];
   // 2 健康证
   const HEALTH = certificateList?.find((item) => item.type === 2) || {};
   const HEALTH_IMG = HEALTH?.imageUrls?.map((item) => ({

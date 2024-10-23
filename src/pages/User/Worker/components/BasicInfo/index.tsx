@@ -12,7 +12,7 @@ import {
 } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { Form, Image, Space, type UploadFile, message } from 'antd';
-import React, { type ReactElement, useEffect, useState } from 'react';
+import React, { type ReactElement, useState } from 'react';
 import { getFormValues } from '../../util';
 import styles from './index.less';
 
@@ -51,8 +51,6 @@ const MassagerInfo: React.FC<Props> = ({ children, masterId, mode }) => {
   const [previewImage, setPreviewImage] = useState('');
   const isDetail = mode === 'detail';
 
-  useEffect(() => {}, []);
-
   const queryDetail = async (open: boolean) => {
     if (open) {
       const res = await queryWorkerDetail.run({
@@ -69,13 +67,12 @@ const MassagerInfo: React.FC<Props> = ({ children, masterId, mode }) => {
     setPreviewOpen(true);
   };
 
-  const onSubmit = async (values) => {
-    console.log(values);
+  const onSubmit = async (values: Record<string, any>) => {
     const formCertificateList = values.certificateList || [];
     const newCertificateList = certificateList.map((item, index) => ({
       certificateId: item.certificateId,
-      refuseReason: formCertificateList[index].refuseReason,
-      auditStatus: formCertificateList[index].auditStatus,
+      refuseReason: formCertificateList[index]?.refuseReason,
+      auditStatus: formCertificateList[index]?.auditStatus,
     }));
     const params = {
       masterId: queryWorkerDetail.data?.masterId,
@@ -110,7 +107,7 @@ const MassagerInfo: React.FC<Props> = ({ children, masterId, mode }) => {
           ? false
           : {
               submitButtonProps: {
-                loading: false,
+                loading: auditQualification.loading,
               },
             }
       }
