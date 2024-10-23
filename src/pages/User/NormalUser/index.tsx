@@ -6,18 +6,6 @@ import { history, useRouteData } from '@umijs/max';
 import { Avatar, Switch } from 'antd';
 import { useRef } from 'react';
 
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
-
 type GithubIssueItem = {
   url: string;
   userId: string;
@@ -112,26 +100,6 @@ export default () => {
         columns={columns}
         actionRef={actionRef}
         cardBordered
-        request={async (params, sort, filter) => {
-          console.log(sort, filter);
-          await waitTime(2000);
-          return {
-            data: [{ name: 'xxx' }],
-          };
-        }}
-        editable={{
-          type: 'multiple',
-        }}
-        columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
-          persistenceType: 'localStorage',
-          defaultValue: {
-            option: { fixed: 'right', disable: true },
-          },
-          onChange(value) {
-            console.log('value: ', value);
-          },
-        }}
         rowKey="id"
         search={{
           labelWidth: 'auto',

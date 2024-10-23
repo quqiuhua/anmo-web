@@ -30,7 +30,8 @@ interface FormValues {
 }
 
 const MassagerInfo: React.FC<Props> = ({ children, masterId, mode }) => {
-  const { queryWorkerDetail, auditQualification } = useModel('worker');
+  const { queryWorkerDetail, auditQualification, queryWorkerData } =
+    useModel('worker');
   const [form] = Form.useForm<FormValues>();
   const [certificateList, setCertificateList] = useState([]);
   const show1 =
@@ -81,8 +82,10 @@ const MassagerInfo: React.FC<Props> = ({ children, masterId, mode }) => {
       certificateList: newCertificateList,
     };
     const res = await auditQualification.run(params);
-    console.log('params>>>', params, res);
-    message.success('提交成功');
+    if (res) {
+      message.success('提交成功');
+      queryWorkerData.refresh();
+    }
     return true;
   };
 

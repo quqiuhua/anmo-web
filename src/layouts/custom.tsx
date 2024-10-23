@@ -1,4 +1,5 @@
 import logo from '@/assets/logo.png';
+import { jsonParse } from '@/utils/jsonMethod';
 import { LogoutOutlined } from '@ant-design/icons';
 import { history, useLocation, useModel } from '@umijs/max';
 import { useMount } from 'ahooks';
@@ -8,7 +9,9 @@ const RightContent = () => {
   const { initialState } = useModel('@@initialState');
   const { name } = initialState;
   const location = useLocation();
+  const userStr = localStorage.getItem('user') || '';
   const token = localStorage.getItem('COOKIE_AUTH_TICKET');
+  const userInfo = jsonParse(userStr, {});
   document.title = '有幸到家';
 
   useMount(() => {
@@ -19,6 +22,7 @@ const RightContent = () => {
       history.replace('/user/worker');
     }
   });
+
   const onLogout = () => {
     localStorage.removeItem('COOKIE_AUTH_TICKET');
     history.replace('/login');
@@ -29,7 +33,6 @@ const RightContent = () => {
     siderMenuType: 'group',
     fixSiderbar: true,
     fixHeader: true,
-    menuHeaderRender: undefined,
     layout: 'mix',
     logo: () => {
       return <img src={logo} alt="" />;
@@ -37,7 +40,7 @@ const RightContent = () => {
     avatarProps: {
       src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
       size: 'small',
-      title: name,
+      title: userInfo.userName || name,
       render: (_, dom) => {
         return (
           <Dropdown

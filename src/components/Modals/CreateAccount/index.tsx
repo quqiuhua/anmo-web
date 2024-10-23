@@ -1,4 +1,5 @@
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
+import { useModel } from '@umijs/max';
 import { Form, message } from 'antd';
 import React, { type ReactElement } from 'react';
 
@@ -9,11 +10,20 @@ interface Props {
 interface FormValues {
   userName: string;
   phone: string;
-  password: string;
 }
 
 const RewardRuleModal: React.FC<Props> = ({ children }) => {
+  const { createUser, queryUserList } = useModel('account');
   const [form] = Form.useForm<FormValues>();
+
+  const onSubmit = async (values: FormValues) => {
+    const res = await createUser.run(values);
+    if (res) {
+      message.success('新建成功');
+      queryUserList.refresh();
+      return true;
+    }
+  };
   return (
     <ModalForm<FormValues>
       title="新增用户"
@@ -25,19 +35,13 @@ const RewardRuleModal: React.FC<Props> = ({ children }) => {
       autoFocusFirstInput
       modalProps={{
         destroyOnClose: true,
-        onCancel: () => console.log('run'),
       }}
       submitter={{
         submitButtonProps: {
-          loading: true,
+          loading: createUser.loading,
         },
       }}
-      submitTimeout={2000}
-      onFinish={async (values) => {
-        console.log(values);
-        message.success('提交成功');
-        return true;
-      }}
+      onFinish={onSubmit}
     >
       <ProFormText
         width="sm"
@@ -51,12 +55,6 @@ const RewardRuleModal: React.FC<Props> = ({ children }) => {
         name="phone"
         label="手机号"
         placeholder="请输入手机号"
-      />
-      <ProFormText.Password
-        width="sm"
-        name="password"
-        label="密码"
-        placeholder="请输入密码"
       />
     </ModalForm>
   );

@@ -6,18 +6,6 @@ import { Popconfirm, Rate } from 'antd';
 import { useRef } from 'react';
 import EditOrder from './components/EditOrder';
 
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
-
 type GithubIssueItem = {
   userId: string;
   name: string;
@@ -142,26 +130,6 @@ export default () => {
         columns={columns}
         actionRef={actionRef}
         cardBordered
-        request={async (params, sort, filter) => {
-          console.log(sort, filter);
-          await waitTime(2000);
-          return {
-            data: [{ orderId: 'xxxx' }],
-          };
-        }}
-        editable={{
-          type: 'multiple',
-        }}
-        columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
-          persistenceType: 'localStorage',
-          defaultValue: {
-            option: { fixed: 'right', disable: true },
-          },
-          onChange(value) {
-            console.log('value: ', value);
-          },
-        }}
         rowKey="id"
         search={{
           labelWidth: 'auto',

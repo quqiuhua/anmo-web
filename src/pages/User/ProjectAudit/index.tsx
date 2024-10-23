@@ -1,20 +1,8 @@
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { request, useRouteData } from '@umijs/max';
+import { useRouteData } from '@umijs/max';
 import { Popconfirm } from 'antd';
 import { useRef } from 'react';
-
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
 
 type GithubIssueItem = {
   userId: string;
@@ -95,15 +83,6 @@ export default () => {
         columns={columns}
         actionRef={actionRef}
         cardBordered
-        request={async (params, sort, filter) => {
-          console.log(sort, filter);
-          await waitTime(2000);
-          return request<{
-            data: GithubIssueItem[];
-          }>('https://proapi.azurewebsites.net/github/issues', {
-            params,
-          });
-        }}
         rowKey="id"
         search={{
           labelWidth: 'auto',

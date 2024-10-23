@@ -5,18 +5,6 @@ import { useModel, useRouteData } from '@umijs/max';
 import dayjs from 'dayjs';
 import BasicInfo from '../Worker/components/BasicInfo';
 
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
-
 type GithubIssueItem = {
   masterId: string;
   nickName: string;
@@ -131,6 +119,7 @@ export default () => {
         columns={columns}
         cardBordered
         request={onRequest}
+        dataSource={queryWorkerData.data?.list || []}
         rowKey="masterId"
         search={{
           labelWidth: 'auto',

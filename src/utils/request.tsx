@@ -12,8 +12,8 @@ export const requestConfig: RequestConfig = {
     },
     // 错误接收及处理
     errorHandler: (error: any, opts: any) => {
-      const { response } = error;
-      console.log(response, opts);
+      const { response = {} } = error;
+      console.log('data,', response, opts);
 
       if (!!response && response.status === 400) {
         const data = response.data;
@@ -34,7 +34,7 @@ export const requestConfig: RequestConfig = {
         return;
       }
 
-      if (response.data?.authFilterErrorCode === '20003') {
+      if (response?.data?.authFilterErrorCode === '20003') {
         message.error('登录失效, 请重新登录~');
         history.push('/login');
         return;
@@ -55,7 +55,10 @@ export const requestConfig: RequestConfig = {
     (response) => {
       // 拦截响应数据，进行个性化处理
       const { data } = response;
-      console.log('response>>>>', data);
+      const { success, message: msg } = data;
+      if (!success && !data?.data) {
+        message.error(msg || '接口异常～');
+      }
       return response;
     },
   ],

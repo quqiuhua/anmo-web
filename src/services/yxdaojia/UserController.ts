@@ -135,3 +135,27 @@ export async function addUser(
     ...(options || {}),
   });
 }
+
+// 查询奖励机制
+export async function queryRewardConfig(
+  params: Record<string, any>,
+  options?: { [key: string]: any },
+) {
+  return request<API.Result_UserInfo_>(`/tech/reward/queryRewardConfig`, {
+    method: 'GET',
+    params: { ...params },
+    ...(options || {}),
+  });
+}
+
+// 配置奖励机制
+export async function operateRewardConfig(
+  body: Record<string, any>,
+  options?: { [key: string]: any },
+) {
+  return request<API.Result_UserInfo_>(`/tech/reward/operateRewardConfig`, {
+    method: 'POST',
+    data: body,
+    ...(options || {}),
+  });
+}

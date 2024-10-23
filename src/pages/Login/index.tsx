@@ -18,7 +18,7 @@ const Login: React.FC = () => {
   document.title = route.name;
   const [form] = Form.useForm();
   const phone = Form.useWatch('phone', form);
-  console.log('route>>>>>', route);
+  const { queryUserInfo } = useModel('account');
   const { getVerifyCode, loginApi, state, setState } = useModel('login');
   const showNormalLoginContent = state.mode === 'login';
   const showForgetContent = state.mode === 'forget-password';
@@ -29,11 +29,11 @@ const Login: React.FC = () => {
     'reset-password': '重置密码',
   };
 
-  // const onChangeMode = () => {
-  //   setState({
-  //     mode: 'forget-password',
-  //   });
-  // };
+  const onChangeMode = () => {
+    setState({
+      mode: 'forget-password',
+    });
+  };
 
   useEffect(() => {
     const userInfoStr = localStorage.getItem('userInfo') || '';
@@ -76,6 +76,7 @@ const Login: React.FC = () => {
       });
       localStorage.setItem('userInfo', userInfo);
     }
+    localStorage.setItem('phone', values.phone);
     const params = {
       phone: values.phone,
       password,
@@ -83,8 +84,12 @@ const Login: React.FC = () => {
     };
     const res = await loginApi.run(params);
     if (res.success) {
+      const res = await queryUserInfo.run({ phone: values.phone });
+      localStorage.setItem('user', jsonStringfy(res, ''));
       message.success('登录成功！');
-      history.replace('/user/normal');
+      setTimeout(() => {
+        history.replace('/user/normal');
+      }, 1000);
     }
   };
 
@@ -203,14 +208,14 @@ const Login: React.FC = () => {
                 <ProFormCheckbox noStyle name="rememberUserInfo">
                   <span className={styles.remember}>记住账户和密码</span>
                 </ProFormCheckbox>
-                {/* <a
+                <a
                   style={{
                     float: 'right',
                   }}
                   onClick={onChangeMode}
                 >
                   忘记密码
-                </a> */}
+                </a>
               </div>
             </Visible>
 

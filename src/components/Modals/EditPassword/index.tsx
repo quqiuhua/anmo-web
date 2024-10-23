@@ -1,17 +1,31 @@
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
+import { useModel } from '@umijs/max';
 import { Form, message } from 'antd';
 import React, { type ReactElement } from 'react';
 
 interface Props {
   children: ReactElement;
+  id: number;
 }
 
 interface FormValues {
   newPassword: string;
 }
 
-const RewardRuleModal: React.FC<Props> = ({ children }) => {
+const RewardRuleModal: React.FC<Props> = ({ children, id }) => {
+  const { resetPwd } = useModel('account');
   const [form] = Form.useForm<FormValues>();
+
+  const onSubmit = async (values) => {
+    const res = await resetPwd.run({
+      ...values,
+      userId: id,
+    });
+    if (res) {
+      message.success('提交成功');
+      return true;
+    }
+  };
   return (
     <ModalForm<FormValues>
       title="修改密码"
@@ -23,19 +37,14 @@ const RewardRuleModal: React.FC<Props> = ({ children }) => {
       autoFocusFirstInput
       modalProps={{
         destroyOnClose: true,
-        onCancel: () => console.log('run'),
       }}
       submitter={{
         submitButtonProps: {
-          loading: true,
+          loading: resetPwd.loading,
         },
       }}
       submitTimeout={2000}
-      onFinish={async (values) => {
-        console.log(values);
-        message.success('提交成功');
-        return true;
-      }}
+      onFinish={onSubmit}
     >
       <ProFormText.Password
         width="sm"

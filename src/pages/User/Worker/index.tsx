@@ -8,18 +8,6 @@ import { useRef } from 'react';
 import BasicInfo from './components/BasicInfo';
 import Comments from './components/Comments';
 
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
-
 type GithubIssueItem = {
   masterId: string;
   nickName: string;
@@ -180,9 +168,7 @@ export default () => {
         actionRef={actionRef}
         cardBordered
         request={onRequest}
-        editable={{
-          type: 'multiple',
-        }}
+        dataSource={queryWorkerData.data?.list || []}
         rowKey="masterId"
         search={{
           labelWidth: 'auto',

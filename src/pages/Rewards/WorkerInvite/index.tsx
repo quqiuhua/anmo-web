@@ -2,20 +2,8 @@ import RewardRuleModal from '@/components/Modals/RewardRule';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { useModel, useRouteData } from '@umijs/max';
-import { Button, Popconfirm } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import { useRef } from 'react';
-
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
 
 type GithubIssueItem = {
   userId: string;
@@ -33,7 +21,7 @@ type GithubIssueItem = {
 export default () => {
   const { route } = useRouteData();
   document.title = route.name;
-  const { queryWorkerInviteList } = useModel('worker');
+  const { queryWorkerInviteList } = useModel('invite');
   const actionRef = useRef<ActionType>();
 
   const onRequest = async ({
@@ -50,6 +38,7 @@ export default () => {
   };
 
   const unBind = (record: GithubIssueItem) => {
+    message.warning('功能待开发');
     console.log('record>>>>', record);
   };
 
