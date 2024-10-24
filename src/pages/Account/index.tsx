@@ -146,7 +146,7 @@ export default () => {
         request={onRequest}
         dataSource={queryUserList.data?.list || []}
         toolBarRender={() => [
-          <CreateAccount key="create">
+          <CreateAccount key="create" refresh={queryUserList.refresh}>
             <Button icon={<PlusOutlined />} type="primary">
               新增账户
             </Button>

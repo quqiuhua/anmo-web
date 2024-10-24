@@ -5,6 +5,7 @@ import React, { type ReactElement } from 'react';
 
 interface Props {
   children: ReactElement;
+  refresh: () => void;
 }
 
 interface FormValues {
@@ -12,15 +13,15 @@ interface FormValues {
   phone: string;
 }
 
-const RewardRuleModal: React.FC<Props> = ({ children }) => {
-  const { createUser, queryUserList } = useModel('account');
+const RewardRuleModal: React.FC<Props> = ({ children, refresh }) => {
+  const { createUser } = useModel('account');
   const [form] = Form.useForm<FormValues>();
 
   const onSubmit = async (values: FormValues) => {
     const res = await createUser.run(values);
     if (res) {
       message.success('新建成功');
-      queryUserList.refresh();
+      refresh();
       return true;
     }
   };
