@@ -1,0 +1,38 @@
+#root {
+  .ant-pro-layout-mix > .ant-layout > aside {
+    background-color: #fff;
+
+    :global {
+      .ant-menu-item-divider {
+        display: none;
+      }
+    }
+  }
+
+  :global {
+    .ant-pro-global-header-logo {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .ant-pro-layout-mix
+    > .ant-layout
+    > .ant-pro-layout-container
+    > .ant-pro-layout-header-fixed-header {
+    background-color: #0a7aff;
+
+    & > .ant-pro-global-header {
+      margin-inline: 0;
+
+      & > .ant-pro-global-header-logo {
+        display: inline-block;
+        width: 257px;
+        height: 100%;
+        margin-inline: 0;
+        padding-left: 16px;
+        background: #fff;
+      }
+    }
+  }
+}

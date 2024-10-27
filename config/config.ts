@@ -6,7 +6,6 @@ export default defineConfig({
   access: {},
   model: {},
   initialState: {},
-  favicons: '',
   request: {},
   reactQuery: {},
   layout: {

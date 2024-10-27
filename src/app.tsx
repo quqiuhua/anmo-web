@@ -1,6 +1,7 @@
 // 全局初始化数据配置，用于 Layout 用户信息和权限初始化
 import CustomLayoutProps from '@/layouts/custom';
 import { RequestConfig } from '@umijs/max';
+import './global.less';
 import { requestConfig } from './utils/request';
 
 // 更多信息见文档：https://umijs.org/docs/api/runtime-config#getinitialstate

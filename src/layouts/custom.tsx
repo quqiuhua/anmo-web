@@ -5,7 +5,7 @@ import { history, useLocation, useModel } from '@umijs/max';
 import { useMount } from 'ahooks';
 import { Dropdown } from 'antd';
 
-const RightContent = () => {
+const Layout = () => {
   const { initialState } = useModel('@@initialState');
   const { name } = initialState;
   const location = useLocation();
@@ -40,7 +40,7 @@ const RightContent = () => {
     avatarProps: {
       src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
       size: 'small',
-      title: userInfo.userName || name,
+      title: <span style={{ color: '#fff' }}>{userInfo.userName || name}</span>,
       render: (_, dom) => {
         return (
           <Dropdown
@@ -63,4 +63,4 @@ const RightContent = () => {
   };
 };
 
-export default RightContent;
+export default Layout;

@@ -84,6 +84,7 @@ export async function queryMasterInvitePageList(
   );
 }
 
+// 登录
 export async function login(body: any, options?: { [key: string]: any }) {
   return request<API.Result_PageInfo_UserInfo__>('/user-center/login/login', {
     method: 'POST',
@@ -95,6 +96,7 @@ export async function login(body: any, options?: { [key: string]: any }) {
   });
 }
 
+// 发送验证码
 export async function sendVerifyCode(
   params: {
     phone?: number | string;
@@ -104,34 +106,6 @@ export async function sendVerifyCode(
   return request<API.Result_UserInfo_>(`/user-center/login/sendVerifyCode`, {
     method: 'GET',
     params: { ...params },
-    ...(options || {}),
-  });
-}
-
-export async function queryUserList(
-  body?: API.UserInfoVO,
-  options?: { [key: string]: any },
-) {
-  return request<API.Result_UserInfo_>('/user-center/user/queryUserPageList', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
-    ...(options || {}),
-  });
-}
-
-export async function addUser(
-  body?: API.UserInfoVO,
-  options?: { [key: string]: any },
-) {
-  return request<API.Result_UserInfo_>('/user-center/user/addUser', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
     ...(options || {}),
   });
 }

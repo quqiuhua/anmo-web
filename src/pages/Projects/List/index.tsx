@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { history, useRouteData } from '@umijs/max';
+import { history, useModel, useRouteData } from '@umijs/max';
 import { Button, Popconfirm } from 'antd';
 import React, { useRef } from 'react';
 
@@ -21,10 +21,21 @@ type GithubIssueItem = {
 export default (): React.FC => {
   const { route } = useRouteData();
   document.title = route.name;
+  const { queryProjectList } = useModel('project');
   const actionRef = useRef<ActionType>();
 
   const goEditPage = () => {
     history.push('/projects/edit');
+  };
+
+  const onRequest = async ({ current, ...rest }: Record<string, any>) => {
+    const res =
+      (await queryProjectList.run({ ...rest, pageNum: current })) || {};
+    return {
+      data: res.list || {},
+      total: res.total,
+      success: true,
+    };
   };
 
   const goProjectDetail = () => {
@@ -97,6 +108,7 @@ export default (): React.FC => {
       <ProTable<GithubIssueItem>
         columns={columns}
         actionRef={actionRef}
+        request={onRequest}
         cardBordered
         toolBarRender={() => [
           <Button
