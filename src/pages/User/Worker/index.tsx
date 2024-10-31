@@ -49,7 +49,7 @@ export default () => {
     {
       disable: true,
       title: '手机号',
-      dataIndex: 'phone',
+      dataIndex: 'masterPhone',
     },
     {
       title: '注册时间',

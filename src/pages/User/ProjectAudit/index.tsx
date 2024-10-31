@@ -1,13 +1,18 @@
+import { WORKER_PROJECT_AUDIT_STATUS } from '@/constants/index';
+import {
+  auditProject,
+  queryMasterProjectPageList,
+} from '@/services/yxdaojia/ProjectController';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { useRouteData } from '@umijs/max';
-import { Popconfirm } from 'antd';
+import { useRequest, useRouteData } from '@umijs/max';
+import { Badge, message, Popconfirm } from 'antd';
 import { useRef } from 'react';
 
 type GithubIssueItem = {
-  userId: string;
-  name: string;
-  status: string;
+  projectId: string;
+  masterId: string;
+  status: number;
   state: string;
   phoneNumber: number;
   registerTime: number;
@@ -22,17 +27,56 @@ export default () => {
   document.title = route.name;
   const actionRef = useRef<ActionType>();
 
-  const handlePass = () => {};
+  const queryList = useRequest(queryMasterProjectPageList, {
+    manual: true,
+  });
+
+  const audit = useRequest(auditProject, {
+    manual: true,
+  });
+
+  const onRequest = async ({ current, ...rest }: Record<string, any>) => {
+    const res = (await queryList.run({ ...rest, pageNum: current })) || {};
+    return {
+      data: res.list || {},
+      total: res.total,
+      success: true,
+    };
+  };
+
+  const handlePass = async ({ masterId, projectId }) => {
+    const res = await audit.run({
+      masterId,
+      projectId,
+      auditStatus: 4,
+    });
+    if (res) {
+      message.success('操作成功');
+      queryList.refresh();
+    }
+  };
+
+  const handleReject = async ({ masterId, projectId }) => {
+    const res = await audit.run({
+      masterId,
+      projectId,
+      auditStatus: 3,
+    });
+    if (res) {
+      message.success('操作成功');
+      queryList.refresh();
+    }
+  };
 
   const columns: ProColumns<GithubIssueItem>[] = [
     {
       title: '用户昵称',
-      dataIndex: 'nickName',
+      dataIndex: 'masterNickName',
       hideInSearch: true,
     },
     {
       title: '真实姓名',
-      dataIndex: 'realName',
+      dataIndex: 'masterName',
     },
     {
       title: '手机号',
@@ -45,35 +89,54 @@ export default () => {
     },
     {
       title: '审核状态',
-      dataIndex: 'auditStatus',
-      hideInSearch: true,
+      dataIndex: 'status',
+      valueType: 'select',
+      fieldProps: {
+        options: WORKER_PROJECT_AUDIT_STATUS,
+      },
+      render: (_, { status }) => {
+        const statusMap = {
+          2: 'processing',
+          3: 'error',
+          4: 'success',
+        };
+        const text = WORKER_PROJECT_AUDIT_STATUS.find(
+          (item) => item.value === status,
+        )?.label;
+        return <Badge status={statusMap[status]} text={text} />;
+      },
     },
     {
       title: '操作',
       valueType: 'option',
       key: 'option',
-      render: () => [
-        <Popconfirm
-          key="reslove"
-          title="通过项目审核"
-          description="您确定要通过此条项目申请吗?"
-          onConfirm={handlePass}
-          okText="确定"
-          cancelText="取消"
-        >
-          <a key="editable">通过</a>
-        </Popconfirm>,
-        <Popconfirm
-          key="reject"
-          title="拒绝项目审核"
-          description="您确定要拒绝此条项目申请吗?"
-          onConfirm={handlePass}
-          okText="确定"
-          cancelText="取消"
-        >
-          <a key="audit">拒绝</a>
-        </Popconfirm>,
-      ],
+      render: (_, { masterId, projectId, status }) => {
+        const show = status === 2;
+        return (
+          show && [
+            <Popconfirm
+              key="reslove"
+              title="通过项目审核"
+              description="您确定要通过此条项目申请吗?"
+              onConfirm={() => handlePass({ masterId, projectId })}
+              okText="确定"
+              cancelText="取消"
+            >
+              <a key="editable">通过</a>
+            </Popconfirm>,
+            <Popconfirm
+              key="reject"
+              title="拒绝项目审核"
+              description="您确定要拒绝此条项目申请吗?"
+              onConfirm={() => handleReject({ masterId, projectId })}
+              okText="确定"
+              cancelText="取消"
+            >
+              <a key="audit">拒绝</a>
+            </Popconfirm>,
+          ]
+        );
+      },
     },
   ];
 
@@ -82,6 +145,7 @@ export default () => {
       <ProTable<GithubIssueItem>
         columns={columns}
         actionRef={actionRef}
+        request={onRequest}
         cardBordered
         rowKey="id"
         search={{

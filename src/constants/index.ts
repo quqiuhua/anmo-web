@@ -150,7 +150,7 @@ export const PROJECT_LABEL = [
   },
   {
     label: '仅限女性',
-    value: 3,
+    value: 4,
   },
 ];
 
@@ -233,5 +233,23 @@ export const PASS_OR_NOTPASS_OPTIONS = [
   {
     label: '不通过',
     value: 3,
+  },
+];
+
+/**
+ * 技师项目审核状态
+ */
+export const WORKER_PROJECT_AUDIT_STATUS = [
+  {
+    label: '审核中',
+    value: 2,
+  },
+  {
+    label: '审核驳回',
+    value: 3,
+  },
+  {
+    label: '审核通过',
+    value: 4,
   },
 ];

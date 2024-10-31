@@ -2,7 +2,7 @@ import CreateAccount from '@/components/Modals/CreateAccount';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { useModel, useRouteData } from '@umijs/max';
+import { useModel } from '@umijs/max';
 import { Button, message, Popconfirm, Switch } from 'antd';
 import { useRef } from 'react';
 
@@ -20,10 +20,8 @@ type GithubIssueItem = {
 };
 
 export default () => {
-  const { route } = useRouteData();
   const { queryUserList, deleteAccount, updateAccountStatus, resetPwd } =
     useModel('account');
-  document.title = route.name;
   const actionRef = useRef<ActionType>();
 
   const onRequest = async ({ current, ...rest }: Record<string, any>) => {

@@ -28,9 +28,14 @@ export const requestConfig: RequestConfig = {
         return;
       }
 
-      if (!!response && (response.status === 404 || response.status === 403)) {
-        message.error('请求地址错误或您没有权限访问该资源。');
+      if (!!response && response.status === 403) {
+        message.error('您没有权限访问该资源。');
         history.push('/403');
+        return;
+      }
+      if (!!response && response.status === 404) {
+        message.error('请求地址错误～');
+        history.push('/404');
         return;
       }
 

@@ -43,7 +43,8 @@ export async function updateProject(
 
 export async function updateProjectStatus(
   params: {
-    userId?: number | string;
+    id: number;
+    status: number;
   },
   options?: { [key: string]: any },
 ) {
@@ -70,14 +71,38 @@ export async function deleteProject(
 
 export async function queryProjectDetail(
   params: {
-    id?: number | string;
+    projectId?: number | string;
   },
   options?: { [key: string]: any },
 ) {
-  const { id } = params;
-  return request<API.Result_UserInfo_>(`/tech/project/detail/${id}`, {
+  return request<API.Result_UserInfo_>(`/tech/project/queryProjectDetail`, {
     method: 'GET',
     params: { ...params },
+    ...(options || {}),
+  });
+}
+
+export async function queryMasterProjectPageList(
+  body: any,
+  options?: { [key: string]: any },
+) {
+  return request<API.Result_PageInfo_UserInfo__>(
+    `/tech/project/queryMasterProjectPageList`,
+    {
+      method: 'POST',
+      data: body,
+      ...(options || {}),
+    },
+  );
+}
+
+export async function auditProject(
+  body: any,
+  options?: { [key: string]: any },
+) {
+  return request<API.Result_PageInfo_UserInfo__>(`/tech/project/auditProject`, {
+    method: 'POST',
+    data: body,
     ...(options || {}),
   });
 }

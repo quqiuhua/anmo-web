@@ -89,4 +89,12 @@ export default [
     icon: 'UserOutlined',
     component: './Account',
   },
+  {
+    path: '/403',
+    component: './403',
+  },
+  {
+    path: '/404',
+    component: './404',
+  },
 ];

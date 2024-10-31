@@ -1,6 +1,7 @@
 // 全局共享数据示例
 import {
   createProject,
+  deleteProject,
   queryProjectDetail,
   queryProjectPageList,
   updateProject,
@@ -29,12 +30,17 @@ const useProject = () => {
     manual: true,
   });
 
+  const deletePro = useRequest(deleteProject, {
+    manual: true,
+  });
+
   return {
-    queryProjectList,
     updateStatus,
+    deletePro,
     addProject,
     editProject,
     queryDetail,
+    queryProjectList,
   };
 };
 
