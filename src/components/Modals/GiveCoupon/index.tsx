@@ -1,18 +1,63 @@
-import { ModalForm, ProFormDigit } from '@ant-design/pro-components';
+import { USER_TYPE } from '@/constants/index';
+import {
+  giveCoupon,
+  queryCouponPageList,
+} from '@/services/yxdaojia/UserController';
+import { ModalForm, ProFormSelect } from '@ant-design/pro-components';
+import { useRequest } from '@umijs/max';
 import { Form, message } from 'antd';
-import React, { type ReactElement } from 'react';
+import React, { type ReactElement, useState } from 'react';
 
 interface Props {
   children: ReactElement;
-  userId: string;
+  userId: number;
 }
 
 interface FormValues {
-  amount: string;
+  couponIds: number[];
 }
 
 const RewardRuleModal: React.FC<Props> = ({ children, userId }) => {
   const [form] = Form.useForm<FormValues>();
+  const [coupons, setCoupons] = useState([]);
+
+  const queryCouponEnums = useRequest(queryCouponPageList, {
+    manual: true,
+  });
+
+  const handOutCoupon = useRequest(giveCoupon, {
+    manual: true,
+  });
+
+  const onOpen = async (open: boolean) => {
+    if (open && !coupons.length) {
+      const res = await queryCouponEnums.run({
+        pageNum: 1,
+        pageSize: 20,
+        status: 1,
+        classifyCode: 'CUSTOMER',
+      });
+      const data = res.list.map((item: API.CouponVO) => ({
+        label: `${item.amount}元（${item.name}）`,
+        value: item.id,
+      }));
+      setCoupons(data);
+    }
+  };
+
+  const onSubmit = async (values: FormValues) => {
+    const params = {
+      ...values,
+      userId,
+      userType: USER_TYPE.CUSTOMER,
+    };
+    const res = await handOutCoupon.run(params as API.GiveCouponParams);
+    if (res) {
+      message.success('发放成功');
+    }
+    return true;
+  };
+
   return (
     <ModalForm<FormValues>
       title="发放优惠券(无门槛)"
@@ -21,6 +66,7 @@ const RewardRuleModal: React.FC<Props> = ({ children, userId }) => {
       labelCol={{ span: 6 }}
       width={390}
       layout="horizontal"
+      onOpenChange={onOpen}
       autoFocusFirstInput
       modalProps={{
         destroyOnClose: true,
@@ -28,17 +74,20 @@ const RewardRuleModal: React.FC<Props> = ({ children, userId }) => {
       }}
       submitter={{
         submitButtonProps: {
-          loading: true,
+          loading: handOutCoupon.loading,
         },
       }}
       submitTimeout={2000}
-      onFinish={async (values) => {
-        console.log({ ...values, userId });
-        message.success('提交成功');
-        return true;
-      }}
+      onFinish={onSubmit}
     >
-      <ProFormDigit width="md" name="amount" placeholder="请输入发放金额" />
+      <ProFormSelect
+        options={coupons}
+        mode="multiple"
+        width="lg"
+        rules={[{ required: true, message: '请选择优惠券' }]}
+        name="couponIds"
+        placeholder="请选择优惠券"
+      />
     </ModalForm>
   );
 };

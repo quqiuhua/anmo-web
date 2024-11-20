@@ -1,12 +1,15 @@
 // 全局共享数据示例
 import {
+  auditProject,
   createProject,
   deleteProject,
+  queryMasterProjectPageList,
   queryProjectDetail,
   queryProjectPageList,
   updateProject,
   updateProjectStatus,
 } from '@/services/yxdaojia/ProjectController';
+
 import { useRequest } from '@umijs/max';
 
 const useProject = () => {
@@ -34,13 +37,23 @@ const useProject = () => {
     manual: true,
   });
 
+  const audit = useRequest(auditProject, {
+    manual: true,
+  });
+
+  const queryProjectAuditList = useRequest(queryMasterProjectPageList, {
+    manual: true,
+  });
+
   return {
     updateStatus,
     deletePro,
     addProject,
     editProject,
     queryDetail,
+    audit,
     queryProjectList,
+    queryProjectAuditList,
   };
 };
 

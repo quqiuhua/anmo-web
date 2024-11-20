@@ -253,3 +253,11 @@ export const WORKER_PROJECT_AUDIT_STATUS = [
     value: 4,
   },
 ];
+
+/**
+ * 优惠券用户类型
+ */
+export const USER_TYPE = {
+  CUSTOMER: 1,
+  MASTER: 2,
+};

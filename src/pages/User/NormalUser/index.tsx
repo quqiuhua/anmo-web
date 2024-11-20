@@ -2,45 +2,41 @@ import GiveCoupon from '@/components/Modals/GiveCoupon';
 import { WORKER_AND_CUSTOMER_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { history, useRouteData } from '@umijs/max';
+import { history, useModel, useRouteData } from '@umijs/max';
 import { Avatar, Switch } from 'antd';
 import { useRef } from 'react';
-
-type GithubIssueItem = {
-  url: string;
-  userId: string;
-  name: string;
-  title: string;
-  status: string;
-  state: string;
-  comments: number;
-  created_at: string;
-  updated_at: string;
-  closed_at?: string;
-};
 
 export default () => {
   const { route } = useRouteData();
   document.title = route.name;
+  const { queryCustomerData } = useModel('customer');
   const actionRef = useRef<ActionType>();
 
-  const onOfferDiscountCard = () => {};
+  const onRequest = async ({ current, ...rest }: Record<string, any>) => {
+    const res =
+      (await queryCustomerData.run({ ...rest, pageNum: current })) || {};
+    return {
+      data: res.list || {},
+      total: res.total,
+      success: true,
+    };
+  };
 
-  const gotoOrder = (record: GithubIssueItem) => {
+  const gotoOrder = (record: API.CustomerVO) => {
     history.push({
-      pathname: `/order?userId=${record.userId}`,
+      pathname: `/order?userId=${record.nickName}`,
     });
   };
 
-  const columns: ProColumns<GithubIssueItem>[] = [
+  const columns: ProColumns<API.CustomerVO>[] = [
     {
       title: '用户昵称',
-      dataIndex: 'name',
-      render: () => {
+      dataIndex: 'nickName',
+      render: (_, { photo, nickName }) => {
         return (
           <>
-            <Avatar />
-            <a style={{ marginLeft: 12 }}>测试数据</a>
+            <Avatar src={photo} />
+            <a style={{ marginLeft: 12 }}>{nickName}</a>
           </>
         );
       },
@@ -48,17 +44,21 @@ export default () => {
     {
       disable: true,
       title: '手机号',
-      dataIndex: 'phoneNumber',
+      dataIndex: 'phone',
+      render: (_, { phone }) => {
+        return phone || '未绑定';
+      },
     },
     {
       title: '注册时间',
-      key: 'registerTime',
-      dataIndex: 'registerTime',
+      key: 'regTime',
+      dataIndex: 'regTime',
       valueType: 'dateRange',
+      render: (_, { regTime }) => regTime,
     },
     {
       title: '消费金额',
-      dataIndex: 'consumption',
+      dataIndex: 'amount',
       hideInSearch: true,
     },
     {
@@ -68,8 +68,8 @@ export default () => {
       fieldProps: {
         options: WORKER_AND_CUSTOMER_STATUS,
       },
-      render: () => {
-        return <Switch checked={true} />;
+      render: (_, { status }) => {
+        return <Switch checked={status === 1} />;
       },
     },
     {
@@ -77,10 +77,8 @@ export default () => {
       valueType: 'option',
       key: 'option',
       render: (text, record) => [
-        <GiveCoupon key="give-coupon" userId={record.userId}>
-          <a key="editable" onClick={onOfferDiscountCard}>
-            发放优惠券
-          </a>
+        <GiveCoupon key="give-coupon" userId={record.customerId}>
+          <a key="editable">发放优惠券</a>
         </GiveCoupon>,
         <a
           onClick={() => gotoOrder(record)}
@@ -96,9 +94,10 @@ export default () => {
 
   return (
     <PageContainer title="用户查询">
-      <ProTable<GithubIssueItem>
+      <ProTable<API.CustomerVO>
         columns={columns}
         actionRef={actionRef}
+        request={onRequest}
         cardBordered
         rowKey="id"
         search={{

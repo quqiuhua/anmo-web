@@ -133,3 +133,45 @@ export async function operateRewardConfig(
     ...(options || {}),
   });
 }
+
+// 查询普通用户
+export async function queryCustomerPageList(
+  body: API.CustomerQueryDTO,
+  options?: { [key: string]: any },
+) {
+  return request<API.CustomerResponse>(
+    `/customer/customer/queryCustomerPageList`,
+    {
+      method: 'POST',
+      data: body,
+      ...(options || {}),
+    },
+  );
+}
+
+// 查询优惠券列表
+export async function queryCouponPageList(
+  body: API.CouponQueryDTO,
+  options?: { [key: string]: any },
+) {
+  return request<API.CouponQueryResponseDTO>(
+    `/coupon/coupon/queryCouponPageList`,
+    {
+      method: 'POST',
+      data: body,
+      ...(options || {}),
+    },
+  );
+}
+
+// 发放优惠券
+export async function giveCoupon(
+  body: API.GiveCouponParams,
+  options?: { [key: string]: any },
+) {
+  return request<boolean>(`/coupon/couponUser/addUserCoupon`, {
+    method: 'POST',
+    data: body,
+    ...(options || {}),
+  });
+}

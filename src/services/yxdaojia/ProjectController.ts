@@ -106,3 +106,43 @@ export async function auditProject(
     ...(options || {}),
   });
 }
+
+// 查询分成比例
+export async function queryCommissionRate(
+  params?: Record<string, string>,
+  options?: { [key: string]: any },
+) {
+  return request<boolean>(`/tech/commission/queryCommissionRate`, {
+    method: 'GET',
+    params: { ...params },
+    ...(options || {}),
+  });
+}
+
+// 配置抽拥比例
+export async function configCommissionRate(
+  body: { commissionRate: number },
+  options?: { [key: string]: any },
+) {
+  return request<boolean>(`/tech/commission/configCommissionRate`, {
+    method: 'POST',
+    data: body,
+    ...(options || {}),
+  });
+}
+
+export async function queryMasterAccountPageList(
+  body: {
+    phone?: string;
+    nickName?: string;
+    pageNum?: number;
+    pageSize?: number;
+  },
+  options?: { [key: string]: any },
+) {
+  return request<boolean>(`/tech/master/queryMasterAccountPageList`, {
+    method: 'POST',
+    data: body,
+    ...(options || {}),
+  });
+}

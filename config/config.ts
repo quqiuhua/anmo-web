@@ -20,6 +20,14 @@ export default defineConfig({
       target: 'https://centertest.yxdaojia.cn',
       changeOrigin: true,
     },
+    '/customer': {
+      target: 'https://centertest.yxdaojia.cn',
+      changeOrigin: true,
+    },
+    '/coupon': {
+      target: 'https://centertest.yxdaojia.cn',
+      changeOrigin: true,
+    },
   },
   routes,
   npmClient: 'pnpm',

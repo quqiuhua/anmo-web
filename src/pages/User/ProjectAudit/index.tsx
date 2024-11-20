@@ -1,17 +1,14 @@
+import RejectModal from '@/components/Modals/Reject';
 import { WORKER_PROJECT_AUDIT_STATUS } from '@/constants/index';
-import {
-  auditProject,
-  queryMasterProjectPageList,
-} from '@/services/yxdaojia/ProjectController';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { useRequest, useRouteData } from '@umijs/max';
+import { useModel, useRouteData } from '@umijs/max';
 import { Badge, message, Popconfirm } from 'antd';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 type GithubIssueItem = {
-  projectId: string;
-  masterId: string;
+  projectId: number;
+  masterId: number;
   status: number;
   state: string;
   phoneNumber: number;
@@ -26,17 +23,17 @@ export default () => {
   const { route } = useRouteData();
   document.title = route.name;
   const actionRef = useRef<ActionType>();
+  const [refreshId, setRefreshId] = useState(1);
+  const { queryProjectAuditList, audit } = useModel('project');
 
-  const queryList = useRequest(queryMasterProjectPageList, {
-    manual: true,
-  });
-
-  const audit = useRequest(auditProject, {
-    manual: true,
-  });
-
-  const onRequest = async ({ current, ...rest }: Record<string, any>) => {
-    const res = (await queryList.run({ ...rest, pageNum: current })) || {};
+  const onRequest = async ({
+    current,
+    refreshId,
+    ...rest
+  }: Record<string, any>) => {
+    console.log('refreshId>>>>', refreshId);
+    const res =
+      (await queryProjectAuditList.run({ ...rest, pageNum: current })) || {};
     return {
       data: res.list || {},
       total: res.total,
@@ -52,19 +49,7 @@ export default () => {
     });
     if (res) {
       message.success('操作成功');
-      queryList.refresh();
-    }
-  };
-
-  const handleReject = async ({ masterId, projectId }) => {
-    const res = await audit.run({
-      masterId,
-      projectId,
-      auditStatus: 3,
-    });
-    if (res) {
-      message.success('操作成功');
-      queryList.refresh();
+      queryProjectAuditList.refresh();
     }
   };
 
@@ -80,7 +65,7 @@ export default () => {
     },
     {
       title: '手机号',
-      dataIndex: 'phoneNumber',
+      dataIndex: 'masterPhone',
     },
     {
       title: '申请项目',
@@ -103,7 +88,12 @@ export default () => {
         const text = WORKER_PROJECT_AUDIT_STATUS.find(
           (item) => item.value === status,
         )?.label;
-        return <Badge status={statusMap[status]} text={text} />;
+        return (
+          <Badge
+            status={statusMap[status as keyof typeof statusMap]}
+            text={text}
+          />
+        );
       },
     },
     {
@@ -122,18 +112,16 @@ export default () => {
               okText="确定"
               cancelText="取消"
             >
-              <a key="editable">通过</a>
+              <a>通过</a>
             </Popconfirm>,
-            <Popconfirm
+            <RejectModal
+              onRefresh={() => setRefreshId(refreshId + 1)}
+              masterId={masterId}
+              projectId={projectId}
               key="reject"
-              title="拒绝项目审核"
-              description="您确定要拒绝此条项目申请吗?"
-              onConfirm={() => handleReject({ masterId, projectId })}
-              okText="确定"
-              cancelText="取消"
             >
-              <a key="audit">拒绝</a>
-            </Popconfirm>,
+              <a>拒绝</a>
+            </RejectModal>,
           ]
         );
       },
@@ -147,13 +135,16 @@ export default () => {
         actionRef={actionRef}
         request={onRequest}
         cardBordered
-        rowKey="id"
+        rowKey="projectId"
         search={{
           labelWidth: 'auto',
           collapseRender: false,
           defaultCollapsed: false,
         }}
         options={false}
+        params={{
+          refreshId,
+        }}
         pagination={{
           pageSize: 10,
           onChange: (page) => console.log(page),

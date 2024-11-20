@@ -72,5 +72,153 @@ declare namespace API {
     email?: string;
   }
 
+  /**
+   * CustomerQueryDTO
+   */
+  interface CustomerQueryDTO {
+    /**
+     * 昵称
+     */
+    nickName?: null | string;
+    pageNum?: number | null;
+    pageSize?: number | null;
+    /**
+     * 手机号
+     */
+    phone?: null | string;
+    /**
+     * 注册时间止
+     */
+    regEnd?: null | string;
+    /**
+     * 注册时间起
+     */
+    regStart?: null | string;
+    /**
+     * 状态
+     */
+    status?: number | null;
+  }
+
+  interface CustomerResponse {
+    code?: number | null;
+    data?: Data;
+    message?: null | string;
+  }
+
+  interface CustomerData {
+    cursor?: null | string;
+    hasNext?: boolean | null;
+    list?: List[] | null;
+    pageNum?: number | null;
+    pageSize?: number | null;
+    total?: number | null;
+  }
+
+  interface CustomerVO {
+    customerId: number;
+    /**
+     * 消费金额（元）
+     */
+    amount?: number | null;
+    /**
+     * 昵称
+     */
+    nickName?: null | string;
+    /**
+     * 手机号
+     */
+    phone?: null | string;
+    /**
+     * 头像
+     */
+    photo?: null | string;
+    /**
+     * 注册时间起
+     */
+    regTime?: null | string;
+    /**
+     * 状态
+     */
+    status?: number | null;
+  }
+
+  /**
+   * CouponQueryDTO
+   */
+  interface CouponQueryDTO {
+    /**
+     * 类型编码
+     */
+    classifyCode?: null | string;
+    pageNum?: number | null;
+    pageSize?: number | null;
+    /**
+     * 状态 1启用 2停用
+     */
+    status?: number | null;
+  }
+
+  interface CouponQueryResponseDTO {
+    code?: number | null;
+    data?: PageListResultCouponQueryResponseDTO;
+    message?: null | string;
+  }
+
+  interface CouponData {
+    cursor?: null | string;
+    hasNext?: boolean | null;
+    list?: CouponQueryResponseDTO[] | null;
+    pageNum?: number | null;
+    pageSize?: number | null;
+    total?: number | null;
+  }
+
+  interface CouponVO {
+    /**
+     * 券额度（元）
+     */
+    amount?: number | null;
+    /**
+     * 券类型
+     */
+    classifyCode?: null | string;
+    /**
+     * 券类型id
+     */
+    classifyId?: number | null;
+    /**
+     * 券类型名称
+     */
+    classifyName?: null | string;
+    /**
+     * 创建时间
+     */
+    createTime?: null | string;
+    /**
+     * 优惠券id
+     */
+    id?: number | null;
+    /**
+     * 券周期
+     */
+    limitDays?: number | null;
+    /**
+     * 券名称
+     */
+    name?: null | string;
+    /**
+     * 券状态 1启用 2停用
+     */
+    status?: number | null;
+  }
+
+  interface GiveCouponParams {
+    userId: number;
+    userType: number;
+    couponIds: number[];
+    dateStart?: 'string';
+  }
+
   type definitions_0 = null;
 }
