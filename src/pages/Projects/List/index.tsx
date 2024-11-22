@@ -114,6 +114,7 @@ export default (): React.FC => {
       title: '适用人群',
       dataIndex: 'suitCrowd',
       valueType: 'select',
+      hideInSearch: true,
       fieldProps: {
         options: TARGET_USER,
       },
@@ -121,6 +122,7 @@ export default (): React.FC => {
     {
       title: '项目标签',
       dataIndex: 'labelList',
+      hideInSearch: true,
       valueType: 'select',
       fieldProps: {
         options: PROJECT_LABEL,

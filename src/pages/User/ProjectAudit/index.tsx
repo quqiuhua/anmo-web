@@ -4,7 +4,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { useModel, useRouteData } from '@umijs/max';
 import { Badge, message, Popconfirm } from 'antd';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 type GithubIssueItem = {
   projectId: number;
@@ -23,15 +23,9 @@ export default () => {
   const { route } = useRouteData();
   document.title = route.name;
   const actionRef = useRef<ActionType>();
-  const [refreshId, setRefreshId] = useState(1);
   const { queryProjectAuditList, audit } = useModel('project');
 
-  const onRequest = async ({
-    current,
-    refreshId,
-    ...rest
-  }: Record<string, any>) => {
-    console.log('refreshId>>>>', refreshId);
+  const onRequest = async ({ current, ...rest }: Record<string, any>) => {
     const res =
       (await queryProjectAuditList.run({ ...rest, pageNum: current })) || {};
     return {
@@ -101,7 +95,7 @@ export default () => {
       valueType: 'option',
       key: 'option',
       render: (_, { masterId, projectId, status }) => {
-        const show = status === 2;
+        const show = status === 2 || true;
         return (
           show && [
             <Popconfirm
@@ -115,7 +109,7 @@ export default () => {
               <a>通过</a>
             </Popconfirm>,
             <RejectModal
-              onRefresh={() => setRefreshId(refreshId + 1)}
+              onRefresh={queryProjectAuditList.refresh}
               masterId={masterId}
               projectId={projectId}
               key="reject"
@@ -142,9 +136,6 @@ export default () => {
           defaultCollapsed: false,
         }}
         options={false}
-        params={{
-          refreshId,
-        }}
         pagination={{
           pageSize: 10,
           onChange: (page) => console.log(page),
