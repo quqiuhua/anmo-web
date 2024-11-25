@@ -1,5 +1,5 @@
 export const getFormValues = (res: any) => {
-  const { certificateList = [] } = res;
+  const { certificateList = [], projectList } = res;
   // 1 身份证
   const ID_CARD = certificateList?.find((item) => item.type === 1) || {};
   const ID_CARD_IMG = [
@@ -45,6 +45,7 @@ export const getFormValues = (res: any) => {
     PROFESSION: PROFESSION_IMG,
     LICENSE: LICENSE_IMG,
     OTHER: OTHER_IMG,
+    projectList: (projectList || []).map((item) => item.projectId),
     certificateList: [
       {
         auditStatus: 4,

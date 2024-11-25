@@ -2,7 +2,7 @@ import { WORKER_AND_CUSTOMER_STATUS } from '@/constants/index';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { useModel, useRouteData } from '@umijs/max';
-import { Badge } from 'antd';
+import { Switch } from 'antd';
 import dayjs from 'dayjs';
 import { useRef } from 'react';
 import BasicInfo from './components/BasicInfo';
@@ -49,7 +49,7 @@ export default () => {
     {
       disable: true,
       title: '手机号',
-      dataIndex: 'masterPhone',
+      dataIndex: 'phone',
     },
     {
       title: '注册时间',
@@ -115,17 +115,13 @@ export default () => {
       hideInSearch: true,
       render: (text, record) => {
         const status = record.masterStatus;
-        const propMap = {
-          '1': {
-            text: '正常',
-            status: 'processing',
-          },
-          '2': {
-            text: '冻结',
-            status: 'default',
-          },
-        };
-        return <Badge text={text} status={propMap[status]?.status} />;
+        return (
+          <Switch
+            checkedChildren="正常"
+            unCheckedChildren="冻结"
+            checked={status === 1}
+          />
+        );
       },
     },
     {

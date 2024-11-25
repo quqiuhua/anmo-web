@@ -146,3 +146,36 @@ export async function queryMasterAccountPageList(
     ...(options || {}),
   });
 }
+
+export async function queryOrderPageList(
+  body: API.OrderRequestParams,
+  options?: { [key: string]: any },
+) {
+  return request<any>(`/order/query/queryOrderPageList`, {
+    method: 'POST',
+    data: body,
+    ...(options || {}),
+  });
+}
+
+export async function queryOrderEvaluateDetail(
+  params: { orderId?: string },
+  options?: { [key: string]: any },
+) {
+  return request<any>(`/order/query/queryOrderEvaluateDetail`, {
+    method: 'GET',
+    params: params,
+    ...(options || {}),
+  });
+}
+
+export async function queryOrderDetail(
+  params: { orderId?: string },
+  options?: { [key: string]: any },
+) {
+  return request<any>(`/order/query/queryOrderDetail`, {
+    method: 'GET',
+    params: params,
+    ...(options || {}),
+  });
+}

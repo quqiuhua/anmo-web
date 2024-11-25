@@ -1,76 +1,134 @@
+import StarIcon from '@/components/StarIcon';
 import { ORDER_STATUS, USER_RATING_ENMS } from '@/constants/index';
+import { queryOrderPageList } from '@/services/yxdaojia/ProjectController';
+import { urlParamsToObj } from '@/utils/common';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { useRouteData } from '@umijs/max';
-import { Popconfirm, Rate } from 'antd';
+import { useLocation, useRequest, useRouteData } from '@umijs/max';
 import { useRef } from 'react';
+import Comments from './components/Comments';
 import EditOrder from './components/EditOrder';
+import styles from './index.less';
 
 type GithubIssueItem = {
-  userId: string;
-  name: string;
-  status: string;
+  orderId: string;
+  masterNickName: string;
+  customerNickName: string;
+  orderStatus: number;
   state: string;
   phoneNumber: number;
   registerTime: number;
   comments: Record<string, any>[];
-  created_at: string;
-  updated_at: string;
-  closed_at?: string;
+  createTime: string;
+  orderStatusStr: string;
+  score?: number;
 };
 
 export default () => {
   const { route } = useRouteData();
   document.title = route.name;
+  const location = useLocation();
   const actionRef = useRef<ActionType>();
+  const query = urlParamsToObj(location.search);
 
-  const cancelOrder = (record: GithubIssueItem) => {
-    console.log('record>>>>>', record);
+  const queryList = useRequest(queryOrderPageList, {
+    manual: true,
+  });
+
+  const onRequest = async ({ current, ...rest }: Record<string, any>) => {
+    const res = (await queryList.run({ ...rest, pageNum: current })) || {};
+    return {
+      data: res.list || {},
+      total: res.total,
+      success: true,
+    };
   };
+
+  console.log('location.query>>>>>', query);
 
   const columns: ProColumns<GithubIssueItem>[] = [
     {
       title: '订单号',
       dataIndex: 'orderId',
+      fixed: 'left',
+    },
+    {
+      title: '订单状态',
+      dataIndex: 'orderStatusList',
+      valueType: 'select',
+      fieldProps: () => {
+        return {
+          options: ORDER_STATUS,
+          multiple: true,
+          mode: 'multiple',
+        };
+      },
+      render: (_, record) => {
+        return record.orderStatusStr;
+      },
     },
     {
       title: '技师昵称',
-      dataIndex: 'massager',
+      dataIndex: 'master',
+      fieldProps: {
+        placeholder: '请输入昵称或手机号',
+      },
+      render: (_, { masterNickName }) => {
+        return masterNickName;
+      },
     },
     {
       title: '技师手机号',
-      dataIndex: 'massagerPhone',
+      dataIndex: 'masterPhone',
+      hideInSearch: true,
+    },
+    {
+      title: '服务时间',
+      key: 'useTime',
+      dataIndex: 'useTime',
+      hideInSearch: true,
+    },
+    {
+      title: '客户昵称',
+      dataIndex: 'customer',
+      initialValue: query.nickName,
+      fieldProps: {
+        placeholder: '请输入昵称或手机号',
+      },
+      render: (_, { customerNickName }) => {
+        return customerNickName;
+      },
+    },
+    {
+      title: '客户手机号',
+      dataIndex: 'customerPhone',
       hideInSearch: true,
     },
     {
       title: '下单时间',
-      key: 'registerTime',
-      dataIndex: 'registerTime',
+      key: 'createTime',
+      dataIndex: 'createTime',
       valueType: 'dateRange',
-    },
-    {
-      title: '用户昵称',
-      dataIndex: 'userName',
+      search: {
+        transform: (value) => {
+          return {
+            createTimeStart: value[0],
+            createTimeEnd: value[1],
+          };
+        },
+      },
+      render: (_, record) => {
+        return record.createTime;
+      },
     },
     {
       title: '用户评分',
-      dataIndex: 'userMark',
+      dataIndex: 'score',
       valueType: 'select',
       hideInTable: true,
       fieldProps: () => {
         return {
           options: USER_RATING_ENMS,
-        };
-      },
-    },
-    {
-      title: '订单状态',
-      dataIndex: 'orderStatus',
-      valueType: 'select',
-      hideInTable: true,
-      fieldProps: () => {
-        return {
-          options: ORDER_STATUS,
         };
       },
     },
@@ -81,45 +139,37 @@ export default () => {
     },
     {
       title: '订单金额',
-      dataIndex: 'orderAmount',
-      hideInSearch: true,
-    },
-    {
-      title: '用户手机号',
-      dataIndex: 'userPhone',
+      dataIndex: 'totalAmount',
       hideInSearch: true,
     },
     {
       title: '用户评价',
       dataIndex: 'userComments',
       hideInSearch: true,
-      render: () => {
-        return <Rate defaultValue={4} />;
+      render: (_, record) => {
+        const show = record.orderStatus === 7;
+        return show ? (
+          <>
+            <span className={styles.score}>{record.score}</span>
+            <StarIcon />
+            <Comments orderId={record.orderId}>
+              <a className={styles.view}>查看</a>
+            </Comments>
+          </>
+        ) : (
+          '--'
+        );
       },
     },
     {
       title: '操作',
       valueType: 'option',
       key: 'option',
+      fixed: 'right',
       render: (text, record) => [
-        <EditOrder key="edit">
-          <a>编辑订单</a>
+        <EditOrder key="edit" orderId={record.orderId}>
+          <a>订单详情</a>
         </EditOrder>,
-        <Popconfirm
-          key="reslove"
-          title="取消订单"
-          description="您确定要取消此订单吗?"
-          onConfirm={() => cancelOrder(record)}
-          okText="确定"
-          okButtonProps={{
-            loading: true,
-          }}
-          cancelText="取消"
-        >
-          <a target="_blank" rel="noopener noreferrer" key="view">
-            取消订单
-          </a>
-        </Popconfirm>,
       ],
     },
   ];
@@ -130,16 +180,19 @@ export default () => {
         columns={columns}
         actionRef={actionRef}
         cardBordered
-        rowKey="id"
+        request={onRequest}
+        rowKey="orderId"
         search={{
           labelWidth: 'auto',
           collapseRender: false,
           defaultCollapsed: false,
         }}
+        scroll={{
+          x: 1600,
+        }}
         options={false}
         pagination={{
           pageSize: 10,
-          onChange: (page) => console.log(page),
         }}
         dateFormatter="string"
         headerTitle="订单列表"

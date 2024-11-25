@@ -28,6 +28,10 @@ export default defineConfig({
       target: 'https://centertest.yxdaojia.cn',
       changeOrigin: true,
     },
+    '/order': {
+      target: 'https://centertest.yxdaojia.cn',
+      changeOrigin: true,
+    },
   },
   routes,
   npmClient: 'pnpm',

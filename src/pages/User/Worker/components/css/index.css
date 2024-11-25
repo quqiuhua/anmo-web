@@ -1,0 +1,35 @@
+.comments :global .ant-list-item-meta-avatar {
+  display: none;
+}
+
+.comments :global .ant-pro-list-row-title {
+  color: #6c6c6c;
+  font-size: 14px;
+  text-align: left;
+  font-family: PingFangSC-regular;
+}
+
+.comments :global .ant-tag {
+  color: #6c6c6c;
+}
+
+.comments .icon {
+  display: inline-block;
+  transform: translate(6px, 3px);
+}
+
+.comments .time {
+  display: inline-block;
+  transform: translateY(-6px);
+  color: #101010;
+  font-size: 14px;
+  text-align: left;
+  font-family: PingFangSC-regular;
+}
+
+.comments .content {
+  color: #101010;
+  font-size: 14px;
+  text-align: left;
+  font-family: PingFangSC-regular;
+}

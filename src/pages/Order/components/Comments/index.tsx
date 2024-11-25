@@ -1,6 +1,6 @@
 import StarIcon from '@/components/StarIcon';
 import { COMMENT_TAGS_MAP } from '@/constants';
-import { queryEvaluatePageList } from '@/services/yxdaojia/UserController';
+import { queryOrderEvaluateDetail } from '@/services/yxdaojia/ProjectController';
 import { ProList } from '@ant-design/pro-components';
 import { useRequest } from '@umijs/max';
 import { Modal, Rate, Space, Tag } from 'antd';
@@ -9,50 +9,40 @@ import styles from './index.less';
 
 interface Props {
   children: ReactElement;
-  masterId: number;
+  orderId: string;
 }
 
-const CommentsModal: React.FC<Props> = ({ children, masterId }) => {
+const CommentsModal: React.FC<Props> = ({ children, orderId }) => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
-  const [pageInfo, setPageInfo] = useState({
-    pageSize: 5,
-    pageNum: 1,
-  });
 
-  const queryEvaluateData = useRequest(queryEvaluatePageList, {
+  const queryEvaluateData = useRequest(queryOrderEvaluateDetail, {
     manual: true,
   });
+  const score = queryEvaluateData.data?.score || 0;
 
   const onRequest = async () => {
     const res = await queryEvaluateData.run({
-      masterId,
-      ...pageInfo,
+      orderId,
     });
-    const newData = res.list?.map((item) => ({
+    console.log('res', res);
+    const newData = [res]?.map((item) => ({
       name: item.customerName,
       content: item.content,
       id: item.createTime,
-      labelList: item.labelList,
+      labelList: item.labels,
       masterId: item.masterId,
+      score: item.score,
       createTime: item.createTime,
-      score: item.evaluateScore,
     }));
     setData(newData);
-  };
-
-  const onPageChange = (page: number, pageSize: number) => {
-    setPageInfo({
-      pageNum: page,
-      pageSize,
-    });
   };
 
   useEffect(() => {
     if (open) {
       onRequest();
     }
-  }, [open, pageInfo.pageNum, pageInfo.pageSize]);
+  }, [open]);
 
   return (
     <>
@@ -70,7 +60,7 @@ const CommentsModal: React.FC<Props> = ({ children, masterId }) => {
           loading={queryEvaluateData.loading}
           headerTitle={
             <div>
-              总评分 4.5
+              总评分 {score}
               <span className={styles.icon}>
                 <StarIcon />
               </span>
@@ -78,12 +68,13 @@ const CommentsModal: React.FC<Props> = ({ children, masterId }) => {
           }
           dataSource={data}
           showActions="always"
-          pagination={{
-            pageSize: 5,
-            defaultCurrent: 1,
-            total: queryEvaluateData.data?.total,
-            onChange: onPageChange,
+          editable={{
+            onSave: async (key, record, originRow) => {
+              console.log(key, record, originRow);
+              return true;
+            },
           }}
+          pagination={false}
           metas={{
             title: {
               dataIndex: 'name',
@@ -112,10 +103,10 @@ const CommentsModal: React.FC<Props> = ({ children, masterId }) => {
               },
             },
             subTitle: {
-              render: (_, record) => {
+              render: () => {
                 return (
                   <Space size={0}>
-                    <Rate value={record.score} disabled />
+                    <Rate value={score} disabled />
                   </Space>
                 );
               },

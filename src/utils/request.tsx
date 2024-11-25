@@ -22,7 +22,7 @@ export const requestConfig: RequestConfig = {
         return;
       }
 
-      if (!!response && response.status === 500) {
+      if (!!response && [500, 502].includes(response.status)) {
         const data = response.data;
         message.error(data.message || '接口异常~');
         return;

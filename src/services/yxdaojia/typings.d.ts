@@ -220,5 +220,47 @@ declare namespace API {
     dateStart?: 'string';
   }
 
+  /**
+   * OrderQueryRequestDTO
+   */
+  interface OrderRequestParams {
+    /**
+     * 下单时间止
+     */
+    createTimeEnd?: null | string;
+    /**
+     * 下单时间起
+     */
+    createTimeStart?: null | string;
+    /**
+     * 客户昵称或手机号
+     */
+    customer?: null | string;
+    /**
+     * 技师昵称或手机号
+     */
+    master?: null | string;
+    /**
+     * 订单编号
+     */
+    orderId?: null | string;
+    /**
+     * 订单状态
+     */
+    orderStatusList?: number[] | null;
+    /**
+     * 页码
+     */
+    pageNum?: number | null;
+    /**
+     * 页大小
+     */
+    pageSize?: number | null;
+    /**
+     * 评价分数
+     */
+    score?: number | null;
+  }
+
   type definitions_0 = null;
 }

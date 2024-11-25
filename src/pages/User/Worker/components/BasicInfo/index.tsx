@@ -49,6 +49,7 @@ const MassagerInfo: React.FC<Props> = ({ children, masterId, mode }) => {
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
+  const [projectList, setProjectList] = useState();
   const isDetail = mode === 'detail';
 
   const queryDetail = async (open: boolean) => {
@@ -57,6 +58,12 @@ const MassagerInfo: React.FC<Props> = ({ children, masterId, mode }) => {
         masterId,
       });
       const values = getFormValues(res);
+      console.log('res>>>>', res);
+      const options = (res?.projectList || []).map((item) => ({
+        label: item.name,
+        value: item.projectId,
+      }));
+      setProjectList(options);
       setCertificateList(values.certificateList);
       form.setFieldsValue(values);
     }
@@ -172,7 +179,7 @@ const MassagerInfo: React.FC<Props> = ({ children, masterId, mode }) => {
         <ProFormDatePicker width="md" name="endDate" label="健康证到期日" />
         <ProFormCheckbox.Group
           width="md"
-          options={[]}
+          options={projectList}
           name="projectList"
           label="可服务项目"
         />

@@ -24,7 +24,7 @@ export default () => {
 
   const gotoOrder = (record: API.CustomerVO) => {
     history.push({
-      pathname: `/order?userId=${record.nickName}`,
+      pathname: `/order?nickName=${record.nickName}`,
     });
   };
 
@@ -69,7 +69,13 @@ export default () => {
         options: WORKER_AND_CUSTOMER_STATUS,
       },
       render: (_, { status }) => {
-        return <Switch checked={status === 1} />;
+        return (
+          <Switch
+            checkedChildren="正常"
+            unCheckedChildren="冻结"
+            checked={status === 1}
+          />
+        );
       },
     },
     {

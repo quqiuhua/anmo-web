@@ -3,28 +3,44 @@
  */
 export const ORDER_STATUS = [
   {
+    label: '订单待支付',
+    value: 1,
+  },
+  {
     label: '技师待出发',
-    value: 'notSetout',
+    value: 2,
   },
   {
     label: '技师待到达',
-    value: 'setOut',
+    value: 3,
   },
   {
     label: '技师已到达',
-    value: 'arrived',
+    value: 4,
   },
   {
     label: '服务中',
-    value: 'inService',
+    value: 5,
   },
   {
     label: '已完成',
-    value: 'finished',
+    value: 6,
   },
   {
-    label: '订单已取消',
-    value: 'canceled',
+    label: '已评价',
+    value: 7,
+  },
+  {
+    label: '已取消未支付',
+    value: 8,
+  },
+  {
+    label: '已取消已支付',
+    value: 9,
+  },
+  {
+    label: '已取消已退款',
+    value: 10,
   },
 ];
 
@@ -34,23 +50,23 @@ export const ORDER_STATUS = [
 export const USER_RATING_ENMS = [
   {
     label: '1分',
-    value: 'oneStar',
+    value: 1,
   },
   {
     label: '2分',
-    value: 'twoStar',
+    value: 2,
   },
   {
     label: '3分',
-    value: 'threeStar',
+    value: 3,
   },
   {
     label: '4分',
-    value: 'fourStar',
+    value: 4,
   },
   {
     label: '5分',
-    value: 'fiveStar',
+    value: 5,
   },
 ];
 
@@ -260,4 +276,11 @@ export const WORKER_PROJECT_AUDIT_STATUS = [
 export const USER_TYPE = {
   CUSTOMER: 1,
   MASTER: 2,
+};
+
+export const COMMENT_TAGS_MAP = {
+  1: '服装整洁',
+  2: '热情礼貌',
+  3: '相当专业',
+  4: '力道刚好',
 };

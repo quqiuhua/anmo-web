@@ -95,7 +95,7 @@ export default () => {
       valueType: 'option',
       key: 'option',
       render: (_, { masterId, projectId, status }) => {
-        const show = status === 2 || true;
+        const show = status === 2;
         return (
           show && [
             <Popconfirm

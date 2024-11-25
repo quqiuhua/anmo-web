@@ -51,7 +51,7 @@ export default () => {
     },
     {
       title: '待入账',
-      dataIndex: 'allowOutAmount',
+      dataIndex: 'waitAmount',
       hideInSearch: true,
     },
     {
