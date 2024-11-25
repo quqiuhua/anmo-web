@@ -24,7 +24,7 @@ export default () => {
 
   const gotoOrder = (record: API.CustomerVO) => {
     history.push({
-      pathname: `/order?nickName=${record.nickName}`,
+      pathname: `/order?nickName=${record.nickName}&customerId=${record.customerId}`,
     });
   };
 

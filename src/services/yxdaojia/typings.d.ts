@@ -224,6 +224,7 @@ declare namespace API {
    * OrderQueryRequestDTO
    */
   interface OrderRequestParams {
+    customerId?: number;
     /**
      * 下单时间止
      */

@@ -2,8 +2,13 @@ import StarIcon from '@/components/StarIcon';
 import { ORDER_STATUS, USER_RATING_ENMS } from '@/constants/index';
 import { queryOrderPageList } from '@/services/yxdaojia/ProjectController';
 import { urlParamsToObj } from '@/utils/common';
+import useUrlState from '@ahooksjs/use-url-state';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import { PageContainer, ProTable } from '@ant-design/pro-components';
+import {
+  PageContainer,
+  ProTable,
+  type ProFormInstance,
+} from '@ant-design/pro-components';
 import { useLocation, useRequest, useRouteData } from '@umijs/max';
 import { useRef } from 'react';
 import Comments from './components/Comments';
@@ -29,22 +34,37 @@ export default () => {
   document.title = route.name;
   const location = useLocation();
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<ProFormInstance>();
   const query = urlParamsToObj(location.search);
+  const [urlState, setUrlState] = useUrlState(query);
 
   const queryList = useRequest(queryOrderPageList, {
     manual: true,
   });
 
+  const onReset = () => {
+    formRef.current?.setFieldsValue({ customer: '' });
+    formRef.current?.resetFields();
+    setUrlState({
+      nickName: '',
+      customerId: '',
+    });
+    formRef.current?.submit();
+  };
+
   const onRequest = async ({ current, ...rest }: Record<string, any>) => {
-    const res = (await queryList.run({ ...rest, pageNum: current })) || {};
+    const res =
+      (await queryList.run({
+        ...rest,
+        pageNum: current,
+        customerId: urlState.customerId,
+      })) || {};
     return {
       data: res.list || {},
       total: res.total,
       success: true,
     };
   };
-
-  console.log('location.query>>>>>', query);
 
   const columns: ProColumns<GithubIssueItem>[] = [
     {
@@ -91,7 +111,7 @@ export default () => {
     {
       title: '客户昵称',
       dataIndex: 'customer',
-      initialValue: query.nickName,
+      initialValue: urlState.nickName,
       fieldProps: {
         placeholder: '请输入昵称或手机号',
       },
@@ -181,7 +201,9 @@ export default () => {
         actionRef={actionRef}
         cardBordered
         request={onRequest}
+        formRef={formRef}
         rowKey="orderId"
+        onReset={onReset}
         search={{
           labelWidth: 'auto',
           collapseRender: false,
