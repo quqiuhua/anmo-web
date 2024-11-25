@@ -114,10 +114,8 @@ const EditOrderModal: React.FC<Props> = ({ children, orderId }) => {
                   <span style={{ marginLeft: 10, color: '#6C6C6C' }}>
                     <Location />
                     <span style={{ marginRight: 4 }}>
-                      {
-                        detail.logList?.find((item) => item.orderStatus === 3)
-                          ?.distance
-                      }
+                      {detail.logList?.find((item) => item.orderStatus === 3)
+                        ?.distance || '--'}
                     </span>
                     km
                   </span>
