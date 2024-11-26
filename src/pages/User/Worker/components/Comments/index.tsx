@@ -37,6 +37,7 @@ const CommentsModal: React.FC<Props> = ({ children, masterId }) => {
       masterId: item.masterId,
       createTime: item.createTime,
       score: item.evaluateScore,
+      averageScore: item.averageScore,
     }));
     setData(newData);
   };
@@ -70,7 +71,7 @@ const CommentsModal: React.FC<Props> = ({ children, masterId }) => {
           loading={queryEvaluateData.loading}
           headerTitle={
             <div>
-              总评分 4.5
+              总评分 {data[0]?.averageScore || '--'}
               <span className={styles.icon}>
                 <StarIcon />
               </span>
