@@ -55,7 +55,7 @@ export default [
   },
   {
     name: '订单管理',
-    path: '/order',
+    path: '/indent-list',
     icon: 'ContainerOutlined',
     component: './Order',
   },
